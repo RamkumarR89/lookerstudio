@@ -1,12 +1,12 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataTableComponent } from '../data-table/data-table.component';
+import { DraggableChartComponent, ChartData, ChartPosition } from '../draggable-chart/draggable-chart.component';
 import { CdkDropList, CdkDrag, CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-report-canvas',
   standalone: true,
-  imports: [CommonModule, DataTableComponent, CdkDropList],
+  imports: [CommonModule, DraggableChartComponent, CdkDropList],
   template: `
     <div class="canvas-container">
       
@@ -30,8 +30,31 @@ import { CdkDropList, CdkDrag, CdkDragDrop } from '@angular/cdk/drag-drop';
           </button>
         </div>
         
+        <!-- Floating Toolbar (when charts exist) -->
+        @if (charts.length > 0) {
+          <div class="floating-toolbar">
+            <button class="toolbar-btn pie" (click)="onAddChart('pie')" title="Add Pie Chart">
+              🥧
+            </button>
+            <button class="toolbar-btn bar" (click)="onAddChart('bar')" title="Add Bar Chart">
+              📊
+            </button>
+            <button class="toolbar-btn table" (click)="onAddChart('table')" title="Add Table">
+              📋
+            </button>
+            <button class="toolbar-btn line" (click)="onAddChart('line')" title="Add Line Chart">
+              📈
+            </button>
+            <div class="toolbar-divider"></div>
+            <button class="toolbar-btn clear" (click)="clearAllCharts()" title="Clear All Charts">
+              🗑️
+            </button>
+          </div>
+        }
+        
         <!-- Empty State (when no charts) -->
-        <div class="empty-state" *ngIf="!hasCharts">
+        @if (charts.length === 0) {
+          <div class="empty-state">
           <div class="illustration-container">
             <!-- Chart Illustration -->
             <div class="chart-illustration">
@@ -62,21 +85,29 @@ import { CdkDropList, CdkDrag, CdkDragDrop } from '@angular/cdk/drag-drop';
           
           <!-- Action Buttons -->
           <div class="action-buttons">
-            <button class="action-btn primary" (click)="onAddChart()">
-              📊 Add chart
+            <button class="action-btn primary" (click)="onAddChart('pie')">
+              🥧 Pie Chart
             </button>
-            <button class="action-btn secondary">
-              🎛️ Add control
+            <button class="action-btn secondary" (click)="onAddChart('bar')">
+              📊 Bar Chart
+            </button>
+            <button class="action-btn secondary" (click)="onAddChart('table')">
+              📋 Table
+            </button>
+            <button class="action-btn secondary" (click)="onAddChart('line')">
+              📈 Line Chart
             </button>
           </div>
-        </div>
+          </div>
+        }
         
-        <!-- Data Table Component (when charts exist) -->
-        <app-data-table 
-          *ngIf="hasCharts"
-          [isSelected]="selectedComponent === 'table'" 
-          (selected)="onSelectTable()">
-        </app-data-table>
+        <!-- Chart Components -->
+        @for (chart of charts; track chart.id) {
+          <app-draggable-chart
+            [chartData]="chart"
+            (menuClicked)="onChartMenuClicked(chart.id)">
+          </app-draggable-chart>
+        }
       </div>
     </div>
   `,
@@ -86,28 +117,149 @@ export class ReportCanvasComponent {
   @Output() componentSelected = new EventEmitter<string>();
   @Output() chartAdded = new EventEmitter<void>();
   
-  selectedComponent: string | null = null; // Start with empty canvas
-  hasCharts = false; // Track if any charts have been added
+  charts: ChartData[] = [];
+  selectedChartId: string | null = null;
+  private chartIdCounter = 1;
 
-  onSelectTable() {
-    this.selectedComponent = 'table';
-    this.componentSelected.emit('table');
+  samplePieData = [
+    { label: 'Princess Cruise Line', value: 17, percentage: 31.5 },
+    { label: 'Holland America Line', value: 11, percentage: 20.4 },
+    { label: 'Carnival Cruise Line', value: 8, percentage: 14.8 },
+    { label: 'AIDA Cruises', value: 7, percentage: 13 },
+    { label: 'Costa Crociere S.p.A', value: 7, percentage: 13 },
+    { label: 'P&O Cruises', value: 4, percentage: 7.4 }
+  ];
+
+  sampleBarData = [
+    { label: 'Princess', value: 17 },
+    { label: 'Holland', value: 11 },
+    { label: 'Carnival', value: 8 },
+    { label: 'AIDA', value: 7 },
+    { label: 'Costa', value: 7 },
+    { label: 'P&O', value: 4 }
+  ];
+
+  sampleTableData = [
+    ['Princess Cruise Line', '17'],
+    ['Holland America Line', '11'],
+    ['Carnival Cruise Line', '8'],
+    ['AIDA Cruises', '7'],
+    ['Costa Crociere S.p.A', '7'],
+    ['P&O Cruises', '4']
+  ];
+
+  clearAllCharts() {
+    this.charts = [];
+    this.selectedChartId = null;
+    this.chartIdCounter = 1;
   }
 
-  onAddChart() {
-    // Add a table chart to the canvas
-    this.hasCharts = true;
-    this.selectedComponent = 'table';
-    this.componentSelected.emit('table');
+  onAddChart(type: 'pie' | 'bar' | 'line' | 'table' = 'pie') {
+    const chartId = `chart-${this.chartIdCounter++}`;
+    
+    let data;
+    let title;
+    
+    // Count existing charts of this type for unique naming
+    const existingOfType = this.charts.filter(c => c.type === type).length;
+    const typeNumber = existingOfType + 1;
+    
+    switch (type) {
+      case 'pie':
+        data = this.samplePieData;
+        title = typeNumber === 1 ? 'OPCO by Record Count' : `Pie Chart ${typeNumber}`;
+        break;
+      case 'bar':
+        data = this.sampleBarData;
+        title = typeNumber === 1 ? 'Record Count by OPCO' : `Bar Chart ${typeNumber}`;
+        break;
+      case 'table':
+        data = this.sampleTableData;
+        title = typeNumber === 1 ? 'Data Table' : `Table ${typeNumber}`;
+        break;
+      case 'line':
+        data = this.sampleBarData; // Using bar data for line chart demo
+        title = typeNumber === 1 ? 'Trend Analysis' : `Line Chart ${typeNumber}`;
+        break;
+      default:
+        data = this.samplePieData;
+        title = 'New Chart';
+    }
+    
+    // Smart positioning: arrange in grid layout
+    const chartWidth = type === 'pie' ? 400 : type === 'table' ? 350 : 380;
+    const chartHeight = type === 'table' ? 300 : type === 'pie' ? 280 : 250;
+    
+    // Calculate grid position (2 columns max)
+    const col = this.charts.length % 2;
+    const row = Math.floor(this.charts.length / 2);
+    
+    const newChart: ChartData = {
+      id: chartId,
+      type: type,
+      title: title,
+      data: data,
+      position: {
+        x: 20 + (col * (chartWidth + 20)),
+        y: 60 + (row * (chartHeight + 20)),
+        width: chartWidth,
+        height: chartHeight
+      }
+    };
+    
+    console.log('Created new chart:', newChart);
+    
+    this.charts.push(newChart);
+    this.selectedChartId = chartId;
+    this.componentSelected.emit(chartId);
+    this.chartAdded.emit();
+  }
+
+  onSelectChart(chartId: string) {
+    this.selectedChartId = chartId;
+    this.componentSelected.emit(chartId);
+  }
+
+  onChartPositionChanged(chartId: string, position: ChartPosition) {
+    const chart = this.charts.find(c => c.id === chartId);
+    if (chart) {
+      chart.position = position;
+    }
+  }
+
+  onChartMenuClicked(chartId: string) {
+    console.log('Chart menu clicked for:', chartId);
+    // Handle chart menu actions (delete, duplicate, etc.)
   }
 
   onDrop(event: CdkDragDrop<any>) {
     // Handle field drop from data panel
     console.log('Field dropped:', event);
     
-    // Create a chart when field is dropped
-    this.hasCharts = true;
-    this.selectedComponent = 'table';
-    this.componentSelected.emit('table');
+    // Only create chart if explicitly requested
+    // this.onAddChart('pie');
+  }
+
+  deleteChart(chartId: string) {
+    this.charts = this.charts.filter(c => c.id !== chartId);
+    if (this.selectedChartId === chartId) {
+      this.selectedChartId = null;
+    }
+  }
+
+  duplicateChart(chartId: string) {
+    const originalChart = this.charts.find(c => c.id === chartId);
+    if (originalChart) {
+      const newChart: ChartData = {
+        ...originalChart,
+        id: `chart-${this.chartIdCounter++}`,
+        position: {
+          ...originalChart.position,
+          x: originalChart.position.x + 20,
+          y: originalChart.position.y + 20
+        }
+      };
+      this.charts.push(newChart);
+    }
   }
 }

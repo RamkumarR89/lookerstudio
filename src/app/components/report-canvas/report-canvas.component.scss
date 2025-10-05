@@ -11,6 +11,9 @@
   overflow: hidden;
   padding-bottom: 8px; /* Small bottom padding for visual breathing room */
   box-sizing: border-box;
+  
+  /* Ensure proper positioning context */
+  transform: translateZ(0);
 }
 
 /* Top Controls */
@@ -39,16 +42,23 @@
 .canvas-area {
   flex: 1;
   background: #fff;
-  margin: 8px 16px 8px 16px; /* Reduced bottom margin since footer provides separation */
+  margin: 8px 16px 8px 16px;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(60,64,67,0.1);
   border: 1px solid #e8eaed;
-  position: relative;
-  min-height: calc(100vh - 180px); /* Account for header and footer */
-  max-height: calc(100vh - 180px); /* Add max-height to prevent overflow */
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
+  position: relative !important;
+  min-height: calc(100vh - 180px);
+  max-height: calc(100vh - 180px);
+  overflow: hidden !important; /* Contain draggable elements within boundary */
+  
+  /* Ensure proper positioning context for draggable elements */
+  transform: translateZ(0); /* Create new stacking context */
+  contain: layout style; /* Optimize for performance */
+  
+  /* Ensure CDK drag boundary works properly */
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
   
   /* Add subtle bottom border to indicate canvas end */
   &::after {
@@ -60,6 +70,7 @@
     height: 2px;
     background: linear-gradient(to right, transparent, #e8eaed 20%, #e8eaed 80%, transparent);
     pointer-events: none;
+    z-index: 1;
   }
 }
 
@@ -96,6 +107,59 @@
   &.active {
     background: #e8f0fe;
     color: #1a73e8;
+  }
+}
+
+.floating-toolbar {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: white;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 2px 8px rgba(60, 64, 67, 0.15);
+  z-index: 20;
+  
+  .toolbar-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: #f8f9fa;
+    }
+    
+    &.pie:hover { background: #e8f0fe; }
+    &.bar:hover { background: #e8f5e8; }
+    &.table:hover { background: #fff4e6; }
+    &.line:hover { background: #f3e8ff; }
+    
+    &.clear {
+      color: #ea4335;
+      
+      &:hover {
+        background: #fce8e6;
+      }
+    }
+  }
+  
+  .toolbar-divider {
+    width: 1px;
+    height: 20px;
+    background: #dadce0;
+    margin: 0 4px;
   }
 }
 
@@ -231,21 +295,23 @@
 
 .action-buttons {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   justify-content: center;
-  margin-bottom: 40px; /* Add bottom margin to ensure buttons are visible */
+  margin-bottom: 40px;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
 }
 
 .action-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: 6px;
+  padding: 8px 12px;
   border: 1px solid #dadce0;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
   
   &.primary {
     background: #1a73e8;
@@ -254,6 +320,7 @@
     
     &:hover {
       background: #1557b0;
+      transform: translateY(-1px);
     }
   }
   
@@ -265,6 +332,7 @@
       background: #f8f9fa;
       border-color: #1a73e8;
       color: #1a73e8;
+      transform: translateY(-1px);
     }
   }
 }
