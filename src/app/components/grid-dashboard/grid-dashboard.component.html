@@ -42,22 +42,56 @@
     </div>
   </div>
 </div>
-<gridster [options]="options">
-  <gridster-item *ngFor="let item of dashboard; let i = index" [item]="item">
-    <div class="widget-content" [class.selected]="selectedChartIndex === i" (click)="selectChart(i)">
-      <!-- Chart Toolbar -->
-      <div class="chart-toolbar">
-        <button class="toolbar-btn" title="More options">⋯</button>
+  
+<div class="main-content-layout">
+  <gridster [options]="options" #gridsterContainer class="gridster-main">
+    <gridster-item *ngFor="let item of dashboard; let i = index" [item]="item" [ngClass]="'grid-item-' + i">
+      <div class="widget-content" [class.selected]="selectedChartIndex === i" (click)="selectChart(i)">
+        <!-- Chart Toolbar -->
+        <div class="chart-toolbar">
+          <button class="toolbar-btn" title="More options" (click)="$event.stopPropagation()">⋯</button>
+        </div>
+        
+        <ng-container [ngSwitch]="item.type">
+          <app-pie-chart 
+            *ngSwitchCase="'pie'" 
+            [title]="'OPCO by Record Count'"
+            class="chart-component">
+          </app-pie-chart>
+          <app-bar-chart 
+            *ngSwitchCase="'bar'" 
+            [title]="'Record Count and SULFUR %'"
+            class="chart-component">
+          </app-bar-chart>
+          <app-table-chart 
+            *ngSwitchCase="'table'" 
+            [title]="'Untitled Report Table'"
+            class="chart-component">
+          </app-table-chart>
+          <app-line-chart 
+            *ngSwitchCase="'line'" 
+            [title]="'Untitled Report Co...'"
+            class="chart-component">
+          </app-line-chart>
+          <app-scatter-chart 
+            *ngSwitchCase="'scatter'" 
+            [title]="'Distribution of MT QTY by EXWH PRICE'"
+            class="chart-component">
+          </app-scatter-chart>
+          <div *ngSwitchDefault class="widget-placeholder">Widget</div>
+        </ng-container>
       </div>
-      
-      <ng-container [ngSwitch]="item.type">
-        <app-pie-chart *ngSwitchCase="'pie'" [title]="'OPCO by Record Count'"></app-pie-chart>
-        <app-bar-chart *ngSwitchCase="'bar'" [title]="'Record Count and SULFUR %'"></app-bar-chart>
-        <app-table-chart *ngSwitchCase="'table'" [title]="'Untitled Report Table'"></app-table-chart>
-        <app-line-chart *ngSwitchCase="'line'" [title]="'Untitled Report Co...'"></app-line-chart>
-        <app-scatter-chart *ngSwitchCase="'scatter'" [title]="'Distribution of MT QTY by EXWH PRICE'"></app-scatter-chart>
-        <div *ngSwitchDefault class="widget-placeholder">Widget</div>
-      </ng-container>
-    </div>
-  </gridster-item>
-</gridster>
+    </gridster-item>
+  </gridster>
+</div>
+<!-- Bottom Status Bar -->
+<div class="bottom-status-bar">
+  <div class="status-left">
+    <span class="app-name">Report Studio</span>
+    <span class="status-indicator">Ready</span>
+  </div>
+  <div class="status-right">
+    <span class="progress-indicator">100%</span>
+    <span class="auto-save-status">Auto-save enabled</span>
+  </div>
+</div>

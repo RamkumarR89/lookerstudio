@@ -26,28 +26,38 @@ Chart.register(PointElement, LinearScale, Tooltip, Legend, ScatterController);
   styles: [`
     .scatter-chart-container {
       height: 100%;
+      width: 100%;
       display: flex;
       flex-direction: column;
-      padding: 20px;
+      padding: 16px;
       background: #fff;
+      box-sizing: border-box;
+      overflow: hidden;
     }
     .chart-title {
-      margin: 0 0 16px 0;
-      font-size: 16px;
+      margin: 0 0 12px 0;
+      font-size: 14px;
       font-weight: 500;
       color: #202124;
       text-align: left;
       font-family: 'Google Sans', Roboto, sans-serif;
       border-bottom: 1px solid #f1f3f4;
-      padding-bottom: 12px;
+      padding-bottom: 8px;
+      flex-shrink: 0;
     }
     .chart-wrapper {
       flex: 1;
       display: flex;
-      align-items: center;
+      align-items: stretch;
       justify-content: center;
-      min-height: 180px;
       position: relative;
+      min-height: 0;
+      width: 100%;
+      overflow: hidden;
+    }
+    .chart-wrapper canvas {
+      max-height: 100% !important;
+      max-width: 100% !important;
     }
   `]
 })
@@ -59,6 +69,18 @@ export class ScatterChartComponent implements OnInit {
   scatterChartOptions: ChartOptions<'scatter'> = {
     responsive: true,
     maintainAspectRatio: false,
+    resizeDelay: 0,
+    animation: {
+      duration: 0
+    },
+    layout: {
+      padding: {
+        top: 10,
+        bottom: 5,
+        left: 5,
+        right: 5
+      }
+    },
     plugins: {
       legend: {
         display: true,
@@ -66,9 +88,10 @@ export class ScatterChartComponent implements OnInit {
         labels: {
           usePointStyle: true,
           font: {
-            size: 12,
+            size: 10,
             family: 'Google Sans'
-          }
+          },
+          padding: 8
         }
       },
       tooltip: {
@@ -87,12 +110,17 @@ export class ScatterChartComponent implements OnInit {
           display: true,
           text: 'MT QTY',
           font: {
-            size: 12,
+            size: 10,
             family: 'Google Sans'
           }
         },
         grid: {
           color: '#f1f3f4'
+        },
+        ticks: {
+          font: {
+            size: 9
+          }
         }
       },
       y: {
@@ -100,19 +128,24 @@ export class ScatterChartComponent implements OnInit {
           display: true,
           text: 'EXWH PRICE',
           font: {
-            size: 12,
+            size: 10,
             family: 'Google Sans'
           }
         },
         grid: {
           color: '#f1f3f4'
+        },
+        ticks: {
+          font: {
+            size: 9
+          }
         }
       }
     },
     elements: {
       point: {
-        radius: 4,
-        hoverRadius: 6,
+        radius: 3,
+        hoverRadius: 5,
         backgroundColor: '#4285f4',
         borderColor: '#4285f4'
       }

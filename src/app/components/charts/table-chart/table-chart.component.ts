@@ -31,24 +31,30 @@ import { CommonModule } from '@angular/common';
   styles: [`
     .table-chart-container {
       height: 100%;
+      width: 100%;
       display: flex;
       flex-direction: column;
-      padding: 20px;
+      padding: 16px;
       background: #fff;
+      box-sizing: border-box;
+      overflow: hidden;
     }
     .chart-title {
-      margin: 0 0 16px 0;
-      font-size: 16px;
+      margin: 0 0 12px 0;
+      font-size: 14px;
       font-weight: 500;
       color: #202124;
       text-align: left;
       font-family: 'Google Sans', Roboto, sans-serif;
       border-bottom: 1px solid #f1f3f4;
-      padding-bottom: 12px;
+      padding-bottom: 8px;
+      flex-shrink: 0;
     }
     .table-wrapper {
       flex: 1;
       overflow: auto;
+      min-height: 0;
+      width: 100%;
     }
     .data-table {
       width: 100%;

@@ -26,28 +26,38 @@ Chart.register(ArcElement, Tooltip, Legend, PieController);
   styles: [`
     .pie-chart-container {
       height: 100%;
+      width: 100%;
       display: flex;
       flex-direction: column;
-      padding: 20px;
+      padding: 16px;
       background: #fff;
+      box-sizing: border-box;
+      overflow: hidden;
     }
     .chart-title {
-      margin: 0 0 16px 0;
-      font-size: 16px;
+      margin: 0 0 12px 0;
+      font-size: 14px;
       font-weight: 500;
       color: #202124;
       text-align: left;
       font-family: 'Google Sans', Roboto, sans-serif;
       border-bottom: 1px solid #f1f3f4;
-      padding-bottom: 12px;
+      padding-bottom: 8px;
+      flex-shrink: 0;
     }
     .chart-wrapper {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 180px;
       position: relative;
+      min-height: 0;
+      width: 100%;
+      overflow: hidden;
+    }
+    .chart-wrapper canvas {
+      max-height: 100% !important;
+      max-width: 100% !important;
     }
   `]
 })
@@ -59,15 +69,28 @@ export class PieChartComponent implements OnInit {
   pieChartOptions: ChartOptions<'pie'> = {
     responsive: true,
     maintainAspectRatio: false,
+    resizeDelay: 0,
+    animation: {
+      duration: 0 // Faster rendering for better resize experience
+    },
+    layout: {
+      padding: {
+        top: 10,
+        bottom: 10,
+        left: 10,
+        right: 10
+      }
+    },
     plugins: {
       legend: {
         position: 'bottom',
         labels: {
-          padding: 20,
+          padding: 8,
           usePointStyle: true,
           font: {
-            size: 12
-          }
+            size: 10
+          },
+          boxWidth: 12
         }
       },
       tooltip: {

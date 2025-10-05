@@ -1,25 +1,81 @@
 .widget-content {
-  background: #fff;
+  background: #ffffff; // Keep white background for content contrast
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(60,64,67,0.08), 0 1px 2px rgba(60,64,67,0.16);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.1); // Stronger shadow for dark background
   height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  border: 1px solid #dadce0;
+  overflow: visible; // Allow charts to display fully
+  border: 1px solid #e0e0e0; // Lighter border
   transition: all 0.2s ease;
   cursor: pointer;
   position: relative;
+  box-sizing: border-box;
+  
+  // Ensure all chart components fill the container properly
+  > * {
+    height: 100%;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    overflow: visible !important; // Prevent chart cutoff
+  }
   
   &:hover {
-    box-shadow: 0 2px 8px rgba(60,64,67,0.15), 0 1px 4px rgba(60,64,67,0.1);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2), 0 4px 8px rgba(0,0,0,0.15); // Enhanced shadow on hover
     border-color: #1a73e8;
-    transform: translateY(-1px);
+    transform: translateY(-2px); // More pronounced lift
   }
   
   &:active {
-    transform: translateY(0);
-    box-shadow: 0 1px 3px rgba(60,64,67,0.12);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+}
+
+/* Gridster specific overrides - A4 sheet like container */
+gridster {
+  background: #202124 !important; // Dark background like in the image
+  padding: 20px 20px 150px 20px; // Large bottom padding to show bottom chart
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  min-height: calc(100vh - 100px); // Ensure minimum height
+
+  gridster-item {
+    border-radius: 8px;
+    overflow: visible;
+    
+    .gridster-item-content {
+      border-radius: 8px;
+      overflow: visible !important;
+      height: 100% !important;
+      width: 100% !important;
+      min-height: 80px;
+      display: flex !important;
+      flex-direction: column !important;
+      box-sizing: border-box;
+      
+      .widget-content {
+        height: 100% !important;
+        width: 100% !important;
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: visible !important;
+      }
+    }
+    
+    .gridster-item-resizable-handler {
+      background: #1a73e8;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    
+    &:hover .gridster-item-resizable-handler {
+      opacity: 0.7;
+    }
   }
 }
 
@@ -72,13 +128,21 @@
   border-bottom: none;
 }
 
-/* Gridster specific overrides */
+/* Gridster specific overrides for fixed dimensions */
 gridster {
-  background: #ffffff !important;
-  padding: 0;
-  height: calc(100vh - 200px);
+  background: #202124 !important; // Dark background like in the image
+  padding: 20px;
+  height: calc(100% - 16px) !important; // Ensure proper height
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: auto; // Allow horizontal scroll for fixed width
+  width: calc(100% - 16px) !important; // Ensure proper width
+  border-radius: 8px;
+  margin: 8px;
+  display: block !important; // Force display
+  
+  &.gridster-main {
+    min-height: 400px; // Minimum height to ensure visibility
+  }
   
   gridster-item {
     border-radius: 8px;
@@ -86,8 +150,23 @@ gridster {
     
     .gridster-item-content {
       border-radius: 8px;
-      overflow: hidden;
-      height: 100%;
+      overflow: visible !important; // Allow content to be fully visible
+      height: 100% !important;
+      width: 100% !important;
+      min-height: 80px; // Match fixed row height
+      display: flex !important;
+      flex-direction: column !important;
+      box-sizing: border-box;
+      
+      // Force proper sizing for chart containers
+      .widget-content {
+        height: 100% !important;
+        width: 100% !important;
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: visible !important; // Prevent chart cutoff
+      }
     }
     
     /* Gridster resize handles styling */
@@ -106,13 +185,17 @@ gridster {
 /* Dashboard container optimization */
 :host {
   display: block;
-  height: 100%;
-  overflow: hidden;
+  min-height: 100vh;
+  height: auto; // Allow natural expansion
+  overflow-y: auto; // Only outer scroll
+  overflow-x: hidden;
+  background: #f8f9fa; // Light gray background for the outer area
+  padding-bottom: 100px; // Large bottom padding to prevent cutoff
 }
 
 /* Professional dashboard styling */
 .dashboard-container {
-  background: #fafbfc;
+  background: #f8f9fa; // Light gray background to contrast with dark gridster
   min-height: 100%;
   padding: 0;
 }
@@ -120,18 +203,19 @@ gridster {
 /* Chart selection states */
 .widget-content.selected {
   border-color: #1a73e8 !important;
-  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2), 0 2px 8px rgba(60,64,67,0.15) !important;
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.3), 0 8px 20px rgba(0,0,0,0.2) !important; // Enhanced selection glow
   
   &::after {
     content: '';
     position: absolute;
     top: 8px;
     right: 8px;
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     background: #1a73e8;
     border-radius: 50%;
     z-index: 10;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); // Add shadow to selection indicator
   }
 }
 
@@ -174,8 +258,8 @@ gridster {
 /* Add better spacing for dashboard controls */
 .dashboard-controls {
   padding: 16px 20px;
-  background: #ffffff;
-  border-bottom: 1px solid #e8eaed;
+  background: #f8f9fa; // Match the outer background
+  border-bottom: none; // Remove border for cleaner look
   
   button {
     font-family: 'Google Sans', Roboto, sans-serif;
@@ -184,6 +268,182 @@ gridster {
     &:hover {
       transform: translateY(-1px);
       box-shadow: 0 2px 8px rgba(26,115,232,0.2);
+    }
+  }
+}
+
+/* Responsive breakpoints for fixed dimensions */
+@media (max-width: 768px) {
+  gridster {
+    padding: 10px;
+    min-width: auto;
+    overflow-x: auto;
+    margin: 4px; // Reduce margin on mobile
+    
+    gridster-item {
+      .gridster-item-content {
+        min-height: 60px; // Smaller on mobile
+      }
+    }
+  }
+  
+  .dashboard-controls {
+    padding: 12px 16px;
+    
+    button {
+      font-size: 12px;
+      padding: 4px 12px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .chart-dropdown {
+    left: 16px;
+    right: 16px;
+    transform: none;
+    min-width: auto;
+  }
+}
+
+/* Grid dimension display (optional utility) */
+.grid-dimensions-info {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: monospace;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  
+  &.show {
+    opacity: 1;
+  }
+}
+
+/* Chart component specific styling */
+.chart-component {
+  height: 100% !important;
+  width: 100% !important;
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  overflow: visible !important; // Allow charts to display fully
+}
+
+/* Force gridster visibility */
+:host ::ng-deep {
+  .gridster-main {
+    background: #202124 !important;
+    min-height: 500px !important;
+  }
+}
+
+/* Main Content Layout */
+.main-content-layout {
+  display: block;
+  height: auto;
+  background: #f8f9fa;
+  margin: 10px auto 120px auto; // Increased bottom margin
+  padding: 5px;
+  overflow: visible;
+  border-radius: 8px;
+  padding-bottom: 50px; // Extra bottom padding
+}
+
+
+
+/* Force proper canvas sizing within gridster */
+:host ::ng-deep {
+  gridster-item {
+    .widget-content {
+      .chart-component {
+        canvas {
+          max-width: 100% !important;
+          max-height: 100% !important;
+          width: auto !important;
+          height: auto !important;
+        }
+      }
+    }
+  }
+  
+  // Chart.js specific fixes
+  .chartjs-render-monitor {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+/* Ensure proper layout without extra white space */
+.layout-container {
+  min-height: 100vh;
+}
+
+/* Let gridster work naturally */
+:host ::ng-deep gridster {
+  height: auto !important;
+  min-height: auto !important;
+}
+
+:host ::ng-deep gridster-item {
+  position: relative !important;
+  z-index: 1 !important;
+  display: block !important;
+}
+
+/* Bottom Status Bar */
+.bottom-status-bar {
+  height: 40px; // Increased height
+  background: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  font-family: 'Google Sans', Roboto, sans-serif;
+  font-size: 12px;
+  color: #5f6368;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001; // Higher z-index to stay above content
+  
+  .status-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    
+    .app-name {
+      font-weight: 500;
+      color: #202124;
+    }
+    
+    .status-indicator {
+      color: #34a853;
+      font-weight: 500;
+    }
+  }
+  
+  .status-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    
+    .progress-indicator {
+      font-weight: 500;
+      color: #202124;
+    }
+    
+    .auto-save-status {
+      color: #34a853;
     }
   }
 }
