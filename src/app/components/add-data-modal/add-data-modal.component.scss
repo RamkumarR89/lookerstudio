@@ -1,0 +1,338 @@
+// Looker Studio Bottom Panel Styles
+.bottom-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e8eaed;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+
+  &.show {
+    transform: translateY(0);
+  }
+}
+
+// Panel Header
+.panel-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid #e8eaed;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  background: #fafafa;
+  min-height: 60px;
+
+  .panel-title h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 400;
+    color: #202124;
+  }
+
+  .panel-controls {
+    display: flex;
+    gap: 8px;
+  }
+
+  .minimize-btn, .close-btn {
+    background: none;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5f6368;
+    font-size: 16px;
+    
+    &:hover {
+      background-color: #e8eaed;
+    }
+  }
+
+  .close-btn span {
+    font-size: 20px;
+    line-height: 1;
+  }
+}
+
+// Tab Navigation
+.tab-navigation {
+  padding: 0 24px;
+  border-bottom: 1px solid #e8eaed;
+  display: flex;
+  flex-shrink: 0;
+  background: white;
+
+  .tab-btn {
+    background: none;
+    border: none;
+    padding: 12px 0;
+    margin-right: 32px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #5f6368;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: #1a73e8;
+    }
+
+    &.active {
+      color: #1a73e8;
+      border-bottom-color: #1a73e8;
+    }
+  }
+}
+
+// Panel Content
+.panel-content {
+  flex: 1;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  
+  &.collapsed {
+    height: 0;
+    overflow: hidden;
+  }
+}
+
+// Tab Content
+.tab-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 24px;
+  max-height: 60vh;
+}
+
+// Connect Tab
+.connect-tab {
+  padding: 24px 0;
+}
+
+.search-section {
+  margin-bottom: 32px;
+
+  .search-input {
+    position: relative;
+    max-width: 400px;
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #5f6368;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 16px 12px 40px;
+      border: 1px solid #dadce0;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      
+      &:focus {
+        border-color: #1a73e8;
+        box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+      }
+
+      &::placeholder {
+        color: #9aa0a6;
+      }
+    }
+  }
+}
+
+// Connectors Section
+.connectors-section {
+  .section-header {
+    margin-bottom: 24px;
+
+    h3 {
+      margin: 0 0 8px 0;
+      font-size: 16px;
+      font-weight: 500;
+      color: #202124;
+    }
+
+    .section-subtitle {
+      margin: 0;
+      font-size: 14px;
+      color: #5f6368;
+
+      .learn-more {
+        color: #1a73e8;
+        text-decoration: none;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+// Connectors Grid
+.connectors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+  padding-bottom: 24px;
+}
+
+.connector-card {
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: white;
+  min-height: 140px;
+
+  &:hover {
+    box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+    border-color: #1a73e8;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+
+    .connector-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      background: #f8f9fa;
+    }
+
+    .card-menu-btn {
+      background: none;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      color: #5f6368;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      
+      &:hover {
+        background-color: #f1f3f4;
+      }
+    }
+  }
+
+  &:hover .card-menu-btn {
+    opacity: 1;
+  }
+
+  .card-content {
+    .connector-name {
+      margin: 0 0 4px 0;
+      font-size: 16px;
+      font-weight: 500;
+      color: #202124;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .preview-badge {
+        background: #e8f0fe;
+        color: #1a73e8;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: 4px;
+        letter-spacing: 0.5px;
+      }
+    }
+
+    .connector-provider {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      color: #5f6368;
+    }
+
+    .connector-description {
+      margin: 0;
+      font-size: 14px;
+      color: #5f6368;
+      line-height: 1.4;
+    }
+  }
+}
+
+// Sources Tab (Empty State)
+.sources-tab {
+  padding: 60px 0;
+  display: flex;
+  justify-content: center;
+
+  .empty-state {
+    text-align: center;
+
+    p {
+      margin: 0 0 24px 0;
+      font-size: 16px;
+      color: #5f6368;
+    }
+
+    .btn-primary {
+      background: #1a73e8;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background: #1557b0;
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .bottom-panel {
+    max-height: 80vh;
+  }
+
+  .connectors-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+  
+  .panel-header {
+    padding: 12px 16px;
+  }
+  
+  .tab-content {
+    padding: 0 16px;
+  }
+}
