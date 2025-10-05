@@ -5,11 +5,18 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  height: 100%;
+  min-height: calc(100vh - 80px); /* Adjusted for header and bottom spacing */
+  max-height: calc(100vh - 80px); /* Prevent overflow */
+  overflow: hidden;
+  padding-bottom: 8px; /* Small bottom padding for visual breathing room */
+  box-sizing: border-box;
 }
 
 /* Top Controls */
 .canvas-top-controls {
-  padding: 16px 24px 0 24px;
+  padding: 8px 16px 0 16px; /* Reduced padding to save space */
+  flex-shrink: 0;
   
   .add-filter-btn {
     display: flex;
@@ -32,18 +39,33 @@
 .canvas-area {
   flex: 1;
   background: #fff;
-  margin: 16px 24px 24px 24px;
+  margin: 8px 16px 8px 16px; /* Reduced bottom margin since footer provides separation */
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(60,64,67,0.1);
   border: 1px solid #e8eaed;
   position: relative;
-  min-height: 500px;
-  overflow: hidden;
+  min-height: calc(100vh - 180px); /* Account for header and footer */
+  max-height: calc(100vh - 180px); /* Add max-height to prevent overflow */
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  
+  /* Add subtle bottom border to indicate canvas end */
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, #e8eaed 20%, #e8eaed 80%, transparent);
+    pointer-events: none;
+  }
 }
 
 .layout-controls {
   position: absolute;
-  top: 20px;
+  top: 16px; /* Reduced from 20px to give more space */
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -81,14 +103,17 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* Changed from center to start */
   height: 100%;
-  padding: 60px 40px;
+  padding: 60px 40px 60px 40px; /* Balanced padding top and bottom */
   text-align: center;
+  min-height: 100%;
+  overflow-y: auto; /* Allow scrolling if content overflows */
+  box-sizing: border-box;
 }
 
 .illustration-container {
-  margin-bottom: 40px;
+  margin-bottom: 32px; /* Reduced from 40px to save vertical space */
 }
 
 .empty-title {
@@ -102,8 +127,8 @@
 .empty-description {
   color: #5f6368;
   font-size: 14px;
-  line-height: 1.5;
-  margin: 0 0 32px 0;
+  line-height: 1.4; /* Slightly tighter line height */
+  margin: 0 0 28px 0; /* Reduced from 32px */
   max-width: 400px;
 }
 
@@ -208,6 +233,7 @@
   display: flex;
   gap: 12px;
   justify-content: center;
+  margin-bottom: 40px; /* Add bottom margin to ensure buttons are visible */
 }
 
 .action-btn {

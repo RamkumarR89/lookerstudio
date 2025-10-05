@@ -174,6 +174,22 @@ import { PropertiesPanelComponent } from '../../components/properties-panel/prop
         (themeSelected)="onThemeSelected($event)">
       </app-theme-panel>
       
+      <!-- Footer -->
+      <footer class="dashboard-footer">
+        <div class="footer-content">
+          <div class="footer-left">
+            <span class="footer-text">Report Studio</span>
+            <span class="footer-separator">•</span>
+            <span class="footer-text">Ready</span>
+          </div>
+          <div class="footer-right">
+            <span class="footer-text">100%</span>
+            <span class="footer-separator">•</span>
+            <span class="footer-text">Auto-save enabled</span>
+          </div>
+        </div>
+      </footer>
+      
     </div>
     
     <!-- Add Data Bottom Panel -->

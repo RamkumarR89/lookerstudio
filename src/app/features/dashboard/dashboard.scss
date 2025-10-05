@@ -5,6 +5,7 @@
   height: 100vh;
   background: #ffffff;
   font-family: 'Google Sans', 'Roboto', sans-serif;
+  overflow: hidden;
 }
 
 .main-layout {
@@ -14,9 +15,11 @@
   position: relative;
   overflow: hidden;
   
-  &.sidebar-open {
-    padding-right: 380px; /* Make space for vertical sidebar */
-  }
+  /* Remove padding - sidebar will be absolutely positioned */
+  padding-right: 0;
+  padding-bottom: 0;
+  margin-bottom: 0;
+  min-height: 0; /* Allow flex shrinking */
 }
 
 .canvas-area {
@@ -28,6 +31,11 @@
   z-index: 1;
   transition: all 0.3s ease;
   position: relative; /* For floating toggle button */
+  
+  /* Ensure canvas takes full width when sidebar is closed */
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 /* Vertical Sidebar Layout */
@@ -45,6 +53,9 @@
   transition: all 0.3s ease;
   width: auto;
   min-width: 80px; /* Minimum width to show tabs */
+  
+  /* Ensure it doesn't interfere with canvas when closed */
+  pointer-events: auto;
 }
 
 .vertical-tabs-container {
@@ -126,6 +137,11 @@
   flex-direction: column;
   flex-shrink: 0;
   max-height: 100vh;
+  
+  /* Ensure proper display and hide when not needed */
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 /* Vertical Toggle Button */
@@ -494,6 +510,30 @@ h2 {
   }
 }
 
+/* Ensure no white space when sidebar is closed */
+.main-layout:not(.sidebar-open) {
+  .vertical-sidebar-layout {
+    display: none !important;
+  }
+  
+  .canvas-area {
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+    width: 100% !important;
+  }
+}
+
+/* Additional defensive CSS to prevent white space */
+.main-layout {
+  margin: 0;
+  padding: 0;
+  
+  &:not(.sidebar-open) .canvas-area {
+    max-width: 100%;
+    flex-basis: 100%;
+  }
+}
+
 /* Global Reset */
 * {
   box-sizing: border-box;
@@ -503,4 +543,115 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Google Sans', 'Roboto', sans-serif;
+  overflow: hidden; /* Prevent body scroll, let components handle scrolling */
+}
+
+/* Ensure full height usage */
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+/* Footer Styles */
+.dashboard-footer {
+  background: #f8f9fa;
+  border-top: 1px solid #e8eaed;
+  padding: 8px 24px;
+  font-size: 12px;
+  color: #5f6368;
+  flex-shrink: 0;
+  z-index: 10;
+  
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 100%;
+  }
+  
+  .footer-left,
+  .footer-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .footer-text {
+    color: #5f6368;
+    font-size: 12px;
+  }
+  
+  .footer-separator {
+    color: #dadce0;
+    font-size: 12px;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .canvas-area {
+    margin: 4px 8px 4px 8px; /* Reduced margins for smaller screens */
+    min-height: calc(100vh - 200px); /* Account for footer on smaller screens */
+    max-height: calc(100vh - 200px);
+  }
+  
+  .empty-state {
+    padding: 30px 20px 30px 20px; /* Balanced padding */
+  }
+  
+  .empty-description {
+    font-size: 13px;
+    max-width: 320px;
+  }
+  
+  .dashboard-footer {
+    padding: 6px 16px; /* Smaller padding on medium screens */
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 768px) {
+  .canvas-area {
+    margin: 2px 4px 2px 4px; /* Minimal margins on mobile */
+    border-radius: 4px;
+    min-height: calc(100vh - 220px); /* Account for mobile header and footer */
+    max-height: calc(100vh - 220px);
+  }
+  
+  .empty-state {
+    padding: 20px 16px 20px 16px; /* Balanced padding for mobile */
+  }
+  
+  .empty-title {
+    font-size: 20px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-width: 200px;
+    margin-bottom: 20px; /* Add bottom margin to buttons */
+  }
+  
+  .action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .dashboard-footer {
+    padding: 4px 12px; /* Even smaller padding on mobile */
+    font-size: 10px;
+    
+    .footer-content {
+      flex-direction: column;
+      gap: 4px;
+      text-align: center;
+    }
+    
+    .footer-left,
+    .footer-right {
+      justify-content: center;
+    }
+  }
 }
