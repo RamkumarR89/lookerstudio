@@ -33,14 +33,18 @@ import { CommonModule } from '@angular/common';
       height: 100%;
       display: flex;
       flex-direction: column;
-      padding: 16px;
+      padding: 20px;
+      background: #fff;
     }
     .chart-title {
-      margin: 0 0 12px 0;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #333;
-      text-align: center;
+      margin: 0 0 16px 0;
+      font-size: 16px;
+      font-weight: 500;
+      color: #202124;
+      text-align: left;
+      font-family: 'Google Sans', Roboto, sans-serif;
+      border-bottom: 1px solid #f1f3f4;
+      padding-bottom: 12px;
     }
     .table-wrapper {
       flex: 1;
@@ -49,21 +53,28 @@ import { CommonModule } from '@angular/common';
     .data-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.9rem;
+      font-size: 13px;
+      font-family: 'Google Sans', Roboto, sans-serif;
     }
     .data-table th,
     .data-table td {
-      padding: 8px 12px;
+      padding: 12px 16px;
       text-align: left;
-      border-bottom: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e8eaed;
     }
     .data-table th {
-      background-color: #f5f5f5;
-      font-weight: 600;
-      color: #555;
+      background-color: #f8f9fa;
+      font-weight: 500;
+      color: #5f6368;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .data-table td {
+      color: #202124;
     }
     .data-table tbody tr:hover {
-      background-color: #f9f9f9;
+      background-color: #f8f9fa;
     }
   `]
 })

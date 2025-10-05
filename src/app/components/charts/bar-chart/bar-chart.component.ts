@@ -28,21 +28,26 @@ Chart.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend, BarContr
       height: 100%;
       display: flex;
       flex-direction: column;
-      padding: 16px;
+      padding: 20px;
+      background: #fff;
     }
     .chart-title {
-      margin: 0 0 12px 0;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #333;
-      text-align: center;
+      margin: 0 0 16px 0;
+      font-size: 16px;
+      font-weight: 500;
+      color: #202124;
+      text-align: left;
+      font-family: 'Google Sans', Roboto, sans-serif;
+      border-bottom: 1px solid #f1f3f4;
+      padding-bottom: 12px;
     }
     .chart-wrapper {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 200px;
+      min-height: 180px;
+      position: relative;
     }
   `]
 })
@@ -88,22 +93,22 @@ export class BarChartComponent implements OnInit {
   private setupChartData() {
     // Default sample data if no data provided
     const sampleData = this.data.length > 0 ? this.data : [
-      { label: 'Princess', value: 17 },
-      { label: 'Holland', value: 11 },
-      { label: 'Carnival', value: 8 },
-      { label: 'AIDA', value: 7 },
-      { label: 'Costa', value: 7 },
-      { label: 'P&O', value: 4 }
+      { label: 'Princess Cruise Line', value: 17 },
+      { label: 'Costa Crociere S p A', value: 11 },
+      { label: 'Carnival Cruise Line', value: 8 },
+      { label: 'AIDA Cruises', value: 7 },
+      { label: 'Holland America Line', value: 7 },
+      { label: 'P&O Cruises', value: 4 }
     ];
 
     this.barChartData = {
       labels: sampleData.map(item => item.label),
       datasets: [{
         data: sampleData.map(item => item.value),
-        backgroundColor: '#36A2EB',
-        borderColor: '#2196F3',
-        borderWidth: 1,
-        borderRadius: 4
+        backgroundColor: ['#4285f4', '#ea4335', '#fbbc04', '#34a853', '#ff6d01', '#9c27b0'],
+        borderColor: 'transparent',
+        borderWidth: 0,
+        borderRadius: 2
       }]
     };
   }

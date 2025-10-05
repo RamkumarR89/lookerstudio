@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { GridsterModule } from 'angular-gridster2';
 import { PieChartComponent } from '../charts/pie-chart/pie-chart.component';
 import { BarChartComponent } from '../charts/bar-chart/bar-chart.component';
 import { LineChartComponent } from '../charts/line-chart/line-chart.component';
 import { TableChartComponent } from '../charts/table-chart/table-chart.component';
+import { ScatterChartComponent } from '../charts/scatter-chart/scatter-chart.component';
 import {
   GridsterConfig,
   GridsterItem,
@@ -16,7 +18,7 @@ import {
 @Component({
   selector: 'app-grid-dashboard',
   standalone: true,
-  imports: [CommonModule, GridsterModule, PieChartComponent, BarChartComponent, LineChartComponent, TableChartComponent],
+  imports: [CommonModule, FormsModule, GridsterModule, PieChartComponent, BarChartComponent, LineChartComponent, TableChartComponent, ScatterChartComponent],
   templateUrl: './grid-dashboard.component.html',
   styleUrls: ['./grid-dashboard.component.scss']
 })
@@ -24,32 +26,33 @@ export class GridDashboardComponent implements OnInit {
   options: GridsterConfig = {} as GridsterConfig;
   dashboard: Array<GridsterItem & { type?: string }> = [];
   showChartDropdown = false;
+  selectedChartIndex: number = -1;
 
   ngOnInit() {
     this.options = {
-      gridType: GridType.Fit,
+      gridType: GridType.ScrollVertical,
       compactType: CompactType.None,
-      margin: 10,
+      margin: 16,
       outerMargin: true,
-      outerMarginTop: null,
-      outerMarginRight: null,
-      outerMarginBottom: null,
-      outerMarginLeft: null,
+      outerMarginTop: 20,
+      outerMarginRight: 20,
+      outerMarginBottom: 20,
+      outerMarginLeft: 20,
       mobileBreakpoint: 640,
       minCols: 1,
-      maxCols: 100,
+      maxCols: 12,
       minRows: 1,
-      maxRows: 100,
-      maxItemCols: 100,
-      minItemCols: 1,
-      maxItemRows: 100,
-      minItemRows: 1,
+      maxRows: 50,
+      maxItemCols: 12,
+      minItemCols: 2,
+      maxItemRows: 8,
+      minItemRows: 2,
       maxItemArea: 2500,
-      minItemArea: 1,
-      defaultItemCols: 2,
-      defaultItemRows: 2,
-      fixedColWidth: 105,
-      fixedRowHeight: 105,
+      minItemArea: 4,
+      defaultItemCols: 6,
+      defaultItemRows: 4,
+      fixedColWidth: undefined,
+      fixedRowHeight: undefined,
       keepFixedHeightInMobile: false,
       keepFixedWidthInMobile: false,
       scrollSensitivity: 10,
@@ -90,26 +93,64 @@ export class GridDashboardComponent implements OnInit {
       disableWarnings: false,
       scrollToNewItems: false
     };
-    this.dashboard = [];
+    
+    // Initialize with Looker Studio layout
+    this.dashboard = [
+      {
+        cols: 6,
+        rows: 5,
+        x: 0,
+        y: 0,
+        type: 'pie'
+      },
+      {
+        cols: 6,
+        rows: 5,
+        x: 6,
+        y: 0,
+        type: 'table'
+      },
+      {
+        cols: 6,
+        rows: 4,
+        x: 0,
+        y: 5,
+        type: 'bar'
+      },
+      {
+        cols: 6,
+        rows: 4,
+        x: 6,
+        y: 5,
+        type: 'scatter'
+      }
+    ];
   }
 
   toggleChartDropdown() {
     this.showChartDropdown = !this.showChartDropdown;
   }
 
-  addChart(type: 'pie' | 'table' | 'bar' | 'line') {
+  addChart(type: 'pie' | 'table' | 'bar' | 'line' | 'scatter') {
     // Ensure dashboard is initialized
     if (!this.dashboard) {
       this.dashboard = [];
     }
     
-    // Find next available position
-    const x = this.dashboard.length % 6;
-    const y = Math.floor(this.dashboard.length / 6);
+    // Calculate next position in a 2-column grid
+    const currentRow = Math.floor(this.dashboard.length / 2);
+    const currentCol = this.dashboard.length % 2;
+    
+    const x = currentCol * 6;
+    const y = currentRow * 5; // Better row spacing
+    
+    // Determine appropriate size based on chart type
+    let cols = 6;
+    let rows = type === 'table' ? 4 : 5;
     
     const newItem = {
-      cols: 2,
-      rows: 2,
+      cols: cols,
+      rows: rows,
       x: x,
       y: y,
       type: type
@@ -119,4 +160,9 @@ export class GridDashboardComponent implements OnInit {
     // Close dropdown after selection
     this.showChartDropdown = false;
   }
+
+  selectChart(index: number) {
+    this.selectedChartIndex = this.selectedChartIndex === index ? -1 : index;
+  }
+
 }

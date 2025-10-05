@@ -28,21 +28,26 @@ Chart.register(ArcElement, Tooltip, Legend, PieController);
       height: 100%;
       display: flex;
       flex-direction: column;
-      padding: 16px;
+      padding: 20px;
+      background: #fff;
     }
     .chart-title {
-      margin: 0 0 12px 0;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #333;
-      text-align: center;
+      margin: 0 0 16px 0;
+      font-size: 16px;
+      font-weight: 500;
+      color: #202124;
+      text-align: left;
+      font-family: 'Google Sans', Roboto, sans-serif;
+      border-bottom: 1px solid #f1f3f4;
+      padding-bottom: 12px;
     }
     .chart-wrapper {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 200px;
+      min-height: 180px;
+      position: relative;
     }
   `]
 })
