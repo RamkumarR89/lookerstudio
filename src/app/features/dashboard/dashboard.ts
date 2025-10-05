@@ -25,16 +25,16 @@ import { PropertiesPanelComponent } from '../../components/properties-panel/prop
       </app-header>
 
       <!-- Main Content Layout -->
-      <div class="main-layout" [class.sidebar-open]="sidebarOpen">
+      <div class="main-layout" [class.sidebar-open]="sidebarOpen" [class.content-visible]="contentVisible">
         <!-- Report Canvas (Left) -->
-        <div class="canvas-area" [class.sidebar-open]="sidebarOpen">
+        <div class="canvas-area" [class.sidebar-open]="sidebarOpen" [class.content-visible]="contentVisible">
           <app-report-canvas 
             (componentSelected)="onComponentSelected($event)">
           </app-report-canvas>
         </div>
 
         <!-- Right Side: Vertical Sidebar -->
-        <div class="vertical-sidebar-layout" *ngIf="sidebarOpen">
+        <div class="vertical-sidebar-layout" [class.content-visible]="contentVisible" *ngIf="sidebarOpen">
           <!-- Content Panel (Left Side) -->
           <div class="vertical-content-panel" *ngIf="contentVisible">
             <!-- Data Panel -->
