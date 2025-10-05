@@ -11,7 +11,8 @@ export interface ChartData {
   type: 'pie' | 'bar' | 'line' | 'table';
   title: string;
   data: any[];
-  position: ChartPosition;
+  position?: ChartPosition;
+  gridsterItem?: import('angular-gridster2').GridsterItem;
 }
 
 
@@ -30,7 +31,8 @@ export interface ChartData {
   type: 'pie' | 'bar' | 'line' | 'table';
   title: string;
   data: any[];
-  position: ChartPosition;
+  position?: ChartPosition;
+  gridsterItem?: import('angular-gridster2').GridsterItem;
 }
 
 @Component({
@@ -41,8 +43,8 @@ export interface ChartData {
     <div class="draggable-chart"
          cdkDrag
          cdkDragBoundary=".canvas-area"
-         [style.width.px]="chartData.position.width"
-         [style.height.px]="chartData.position.height"
+         [style.width.px]="chartData.position?.width"
+         [style.height.px]="chartData.position?.height"
          [style.transform]="getTransform()">
       <div class="chart-header">
         <h3>{{ chartData.title }}</h3>
@@ -70,6 +72,13 @@ export class DraggableChartComponent {
   @Input() chartData!: ChartData;
 
   getTransform(): string {
-    return `translate3d(${this.chartData.position.x}px, ${this.chartData.position.y}px, 0)`;
+    if (this.chartData.gridsterItem) {
+      // Gridster handles positioning, so no transform needed
+      return '';
+    }
+    if (this.chartData.position) {
+      return `translate3d(${this.chartData.position.x}px, ${this.chartData.position.y}px, 0)`;
+    }
+    return '';
   }
 }

@@ -1,113 +1,41 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DraggableChartComponent, ChartData, ChartPosition } from '../draggable-chart/draggable-chart.component';
-import { CdkDropList, CdkDrag, CdkDragDrop } from '@angular/cdk/drag-drop';
+import { DraggableChartComponent } from '../../components/draggable-chart/draggable-chart.component';
+import { ChartData, ChartPosition } from '../../draggable-chart/chart-data.model';
+import { GridsterModule, GridsterConfig, GridsterItem, GridType, CompactType, DisplayGrid } from 'angular-gridster2';
 
 @Component({
   selector: 'app-report-canvas',
   standalone: true,
-  imports: [CommonModule, DraggableChartComponent, CdkDropList],
+  imports: [CommonModule, DraggableChartComponent, GridsterModule],
   template: `
     <div class="canvas-container">
-      
-      <!-- Canvas Controls - Add Filter -->
       <div class="canvas-top-controls">
-        <button class="add-filter-btn">
-          ⚡ Add filter
-        </button>
+        <button class="add-filter-btn">⚡ Add filter</button>
       </div>
-      
-      <!-- Main Canvas -->
-      <div class="canvas-area" cdkDropList (cdkDropListDropped)="onDrop($event)">
-        
-        <!-- Layout Toggle Buttons -->
+      <div class="canvas-area">
         <div class="layout-controls">
-          <button class="layout-toggle active">
-            ✓ Freeform layout
-          </button>
-          <button class="layout-toggle">
-            Responsive layout
-          </button>
+          <button class="layout-toggle active">✓ Grid layout</button>
         </div>
-        
-        <!-- Floating Toolbar (when charts exist) -->
-        @if (charts.length > 0) {
-          <div class="floating-toolbar">
-            <button class="toolbar-btn pie" (click)="onAddChart('pie')" title="Add Pie Chart">
-              🥧
-            </button>
-            <button class="toolbar-btn bar" (click)="onAddChart('bar')" title="Add Bar Chart">
-              📊
-            </button>
-            <button class="toolbar-btn table" (click)="onAddChart('table')" title="Add Table">
-              📋
-            </button>
-            <button class="toolbar-btn line" (click)="onAddChart('line')" title="Add Line Chart">
-              📈
-            </button>
-            <div class="toolbar-divider"></div>
-            <button class="toolbar-btn clear" (click)="clearAllCharts()" title="Clear All Charts">
-              🗑️
-            </button>
-          </div>
-        }
-        
-        <!-- Empty State (when no charts) -->
-        @if (charts.length === 0) {
-          <div class="empty-state">
-          <div class="illustration-container">
-            <!-- Chart Illustration -->
-            <div class="chart-illustration">
-              <div class="chart-bars">
-                <div class="bar orange" style="height: 20px;"></div>
-                <div class="bar yellow" style="height: 35px;"></div>
-                <div class="bar red" style="height: 45px;"></div>
-                <div class="bar blue" style="height: 30px;"></div>
-                <div class="bar green" style="height: 50px;"></div>
-                <div class="bar purple" style="height: 25px;"></div>
-              </div>
-              <div class="chart-elements">
-                <div class="dot orange"></div>
-                <div class="circle-lg"></div>
-                <div class="circle-md"></div>
-                <div class="circle-sm"></div>
-                <div class="dot red"></div>
-                <div class="dot blue"></div>
-              </div>
-            </div>
-          </div>
-          
-          <h2 class="empty-title">Let's get started</h2>
-          <p class="empty-description">
-            Drag a field from the Data Panel to the canvas to add a new chart or 
-            select a component on the report canvas to edit it.
-          </p>
-          
-          <!-- Action Buttons -->
-          <div class="action-buttons">
-            <button class="action-btn primary" (click)="onAddChart('pie')">
-              🥧 Pie Chart
-            </button>
-            <button class="action-btn secondary" (click)="onAddChart('bar')">
-              📊 Bar Chart
-            </button>
-            <button class="action-btn secondary" (click)="onAddChart('table')">
-              📋 Table
-            </button>
-            <button class="action-btn secondary" (click)="onAddChart('line')">
-              📈 Line Chart
-            </button>
-          </div>
-          </div>
-        }
-        
-        <!-- Chart Components -->
-        @for (chart of charts; track chart.id) {
-          <app-draggable-chart
-            [chartData]="chart"
-            (menuClicked)="onChartMenuClicked(chart.id)">
-          </app-draggable-chart>
-        }
+        <div *ngIf="charts.length > 0" class="floating-toolbar">
+          <button class="toolbar-btn pie" (click)="onAddChart('pie')" title="Add Pie Chart">🥧</button>
+          <button class="toolbar-btn bar" (click)="onAddChart('bar')" title="Add Bar Chart">📊</button>
+          <button class="toolbar-btn table" (click)="onAddChart('table')" title="Add Table">📋</button>
+          <button class="toolbar-btn line" (click)="onAddChart('line')" title="Add Line Chart">📈</button>
+          <div class="toolbar-divider"></div>
+          <button class="toolbar-btn clear" (click)="clearAllCharts()" title="Clear All Charts">🗑️</button>
+        </div>
+        <div *ngIf="charts.length === 0" class="empty-state">
+          <!-- ...existing code for empty state... -->
+        </div>
+        <gridster [options]="gridsterOptions">
+          <gridster-item *ngFor="let chart of charts" [item]="chart.gridsterItem">
+            <app-draggable-chart
+              [chartData]="chart"
+              (menuClicked)="onChartMenuClicked(chart.id)">
+            </app-draggable-chart>
+          </gridster-item>
+        </gridster>
       </div>
     </div>
   `,
@@ -120,7 +48,21 @@ export class ReportCanvasComponent {
   charts: ChartData[] = [];
   selectedChartId: string | null = null;
   private chartIdCounter = 1;
-
+  gridsterOptions: GridsterConfig = {
+    gridType: GridType.Fit,
+    compactType: CompactType.None,
+    margin: 10,
+    outerMargin: true,
+    draggable: { enabled: true },
+    resizable: { enabled: true },
+    displayGrid: DisplayGrid.Always,
+    minCols: 6,
+    maxCols: 12,
+    minRows: 6,
+    maxRows: 12,
+    defaultItemCols: 2,
+    defaultItemRows: 2
+  };
   samplePieData = [
     { label: 'Princess Cruise Line', value: 17, percentage: 31.5 },
     { label: 'Holland America Line', value: 11, percentage: 20.4 },
@@ -129,7 +71,6 @@ export class ReportCanvasComponent {
     { label: 'Costa Crociere S.p.A', value: 7, percentage: 13 },
     { label: 'P&O Cruises', value: 4, percentage: 7.4 }
   ];
-
   sampleBarData = [
     { label: 'Princess', value: 17 },
     { label: 'Holland', value: 11 },
@@ -138,7 +79,6 @@ export class ReportCanvasComponent {
     { label: 'Costa', value: 7 },
     { label: 'P&O', value: 4 }
   ];
-
   sampleTableData = [
     ['Princess Cruise Line', '17'],
     ['Holland America Line', '11'],
@@ -156,14 +96,10 @@ export class ReportCanvasComponent {
 
   onAddChart(type: 'pie' | 'bar' | 'line' | 'table' = 'pie') {
     const chartId = `chart-${this.chartIdCounter++}`;
-    
     let data;
     let title;
-    
-    // Count existing charts of this type for unique naming
     const existingOfType = this.charts.filter(c => c.type === type).length;
     const typeNumber = existingOfType + 1;
-    
     switch (type) {
       case 'pie':
         data = this.samplePieData;
@@ -178,37 +114,27 @@ export class ReportCanvasComponent {
         title = typeNumber === 1 ? 'Data Table' : `Table ${typeNumber}`;
         break;
       case 'line':
-        data = this.sampleBarData; // Using bar data for line chart demo
+        data = this.sampleBarData;
         title = typeNumber === 1 ? 'Trend Analysis' : `Line Chart ${typeNumber}`;
         break;
       default:
         data = this.samplePieData;
         title = 'New Chart';
     }
-    
-    // Smart positioning: arrange in grid layout
-    const chartWidth = type === 'pie' ? 400 : type === 'table' ? 350 : 380;
-    const chartHeight = type === 'table' ? 300 : type === 'pie' ? 280 : 250;
-    
-    // Calculate grid position (2 columns max)
-    const col = this.charts.length % 2;
-    const row = Math.floor(this.charts.length / 2);
-    
+    // Gridster item config
+    const gridsterItem: GridsterItem = {
+      cols: 2,
+      rows: 2,
+      x: (this.charts.length % 6),
+      y: Math.floor(this.charts.length / 6)
+    };
     const newChart: ChartData = {
       id: chartId,
       type: type,
       title: title,
       data: data,
-      position: {
-        x: 20 + (col * (chartWidth + 20)),
-        y: 60 + (row * (chartHeight + 20)),
-        width: chartWidth,
-        height: chartHeight
-      }
+      gridsterItem
     };
-    
-    console.log('Created new chart:', newChart);
-    
     this.charts.push(newChart);
     this.selectedChartId = chartId;
     this.componentSelected.emit(chartId);
@@ -222,8 +148,10 @@ export class ReportCanvasComponent {
 
   onChartPositionChanged(chartId: string, position: ChartPosition) {
     const chart = this.charts.find(c => c.id === chartId);
-    if (chart) {
-      chart.position = position;
+    if (chart && chart.gridsterItem) {
+      chart.gridsterItem.x = position.x;
+      chart.gridsterItem.y = position.y;
+      // Optionally update cols/rows if position includes width/height
     }
   }
 
@@ -232,13 +160,6 @@ export class ReportCanvasComponent {
     // Handle chart menu actions (delete, duplicate, etc.)
   }
 
-  onDrop(event: CdkDragDrop<any>) {
-    // Handle field drop from data panel
-    console.log('Field dropped:', event);
-    
-    // Only create chart if explicitly requested
-    // this.onAddChart('pie');
-  }
 
   deleteChart(chartId: string) {
     this.charts = this.charts.filter(c => c.id !== chartId);
@@ -250,14 +171,15 @@ export class ReportCanvasComponent {
   duplicateChart(chartId: string) {
     const originalChart = this.charts.find(c => c.id === chartId);
     if (originalChart) {
+      const newGridsterItem: GridsterItem = {
+        ...originalChart.gridsterItem,
+        x: (originalChart.gridsterItem.x ?? 0) + 1,
+        y: (originalChart.gridsterItem.y ?? 0) + 1
+      };
       const newChart: ChartData = {
         ...originalChart,
         id: `chart-${this.chartIdCounter++}`,
-        position: {
-          ...originalChart.position,
-          x: originalChart.position.x + 20,
-          y: originalChart.position.y + 20
-        }
+        gridsterItem: newGridsterItem
       };
       this.charts.push(newChart);
     }

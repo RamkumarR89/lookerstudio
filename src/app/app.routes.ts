@@ -32,6 +32,10 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'report-builder',
+    loadComponent: () => import('./features/report-builder/report-builder').then(c => c.ReportBuilder)
+  },
+  {
     path: 'data-sources',
     loadComponent: () => import('./features/data-sources/data-sources').then(c => c.DataSources)
   },

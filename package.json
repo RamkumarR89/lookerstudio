@@ -34,6 +34,7 @@
     "@types/lodash": "^4.17.20",
     "@types/sql.js": "^1.4.9",
     "@types/uuid": "^10.0.0",
+    "angular-gridster2": "^20.2.2",
     "chart.js": "^4.5.0",
     "date-fns": "^4.1.0",
     "lodash": "^4.17.21",

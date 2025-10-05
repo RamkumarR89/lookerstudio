@@ -1,0 +1,51 @@
+<div class="dashboard-controls" style="margin: 24px 0; text-align: center; position: relative;">
+  <button (click)="toggleChartDropdown()" style="border: 1px solid #2196f3; background: #fff; color: #2196f3; border-radius: 12px; padding: 8px 24px; font-size: 1.1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.08); cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+    <span style="display:inline-block; width:20px; height:20px; background:url('https://img.icons8.com/ios/50/2196f3/combo-chart.png') no-repeat center/contain;"></span>
+    Add a chart <span style="font-size:1.2em;">▼</span>
+  </button>
+  
+  <!-- Chart Selection Dropdown -->
+  <div *ngIf="showChartDropdown" class="chart-dropdown" style="position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: white; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; min-width: 200px; margin-top: 8px;">
+    <div class="chart-option" (click)="addChart('pie')" style="padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #f5f5f5; display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 1.4em;">🥧</span>
+      <div>
+        <div style="font-weight: 500;">Pie Chart</div>
+        <div style="font-size: 0.85em; color: #666;">Show proportional data</div>
+      </div>
+    </div>
+    <div class="chart-option" (click)="addChart('bar')" style="padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #f5f5f5; display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 1.4em;">📊</span>
+      <div>
+        <div style="font-weight: 500;">Bar Chart</div>
+        <div style="font-size: 0.85em; color: #666;">Compare categories</div>
+      </div>
+    </div>
+    <div class="chart-option" (click)="addChart('table')" style="padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #f5f5f5; display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 1.4em;">📋</span>
+      <div>
+        <div style="font-weight: 500;">Table</div>
+        <div style="font-size: 0.85em; color: #666;">Display raw data</div>
+      </div>
+    </div>
+    <div class="chart-option" (click)="addChart('line')" style="padding: 12px 16px; cursor: pointer; display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 1.4em;">📈</span>
+      <div>
+        <div style="font-weight: 500;">Line Chart</div>
+        <div style="font-size: 0.85em; color: #666;">Show trends over time</div>
+      </div>
+    </div>
+  </div>
+</div>
+<gridster [options]="options">
+  <gridster-item *ngFor="let item of dashboard" [item]="item">
+    <div class="widget-content">
+      <ng-container [ngSwitch]="item.type">
+        <app-pie-chart *ngSwitchCase="'pie'" [title]="'OPCO by Record Count'"></app-pie-chart>
+        <app-bar-chart *ngSwitchCase="'bar'" [title]="'Record Count by OPCO'"></app-bar-chart>
+        <app-table-chart *ngSwitchCase="'table'" [title]="'Data Table'"></app-table-chart>
+        <app-line-chart *ngSwitchCase="'line'" [title]="'Trend Analysis'"></app-line-chart>
+        <div *ngSwitchDefault class="widget-placeholder">Widget</div>
+      </ng-container>
+    </div>
+  </gridster-item>
+</gridster>
