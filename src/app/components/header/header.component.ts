@@ -7,65 +7,97 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <!-- Top Header -->
+    <!-- Exact Looker Studio Header -->
     <header class="looker-header">
-      <div class="header-left">
-        <div class="logo">📊</div>
-        <div class="report-title">
-          <input type="text" value="Untitled Report" class="title-input">
+      <div class="header-content">
+        <!-- Left: Logo and Title -->
+        <div class="header-left">
+          <div class="logo">📊</div>
+          <span class="report-title">Untitled Report</span>
         </div>
-      </div>
-      
-      <div class="header-right">
-        <button class="header-btn">💾 Save</button>
-        <button class="header-btn primary">📤 Share</button>
-        <button class="header-btn">👁️ View</button>
-        <button class="header-btn">⋮</button>
+        
+        <!-- Center: Menu Items -->
+        <nav class="header-nav">
+          <span class="nav-item">File</span>
+          <span class="nav-item">Edit</span>
+          <span class="nav-item">View</span>
+          <span class="nav-item">Insert</span>
+          <span class="nav-item">Page</span>
+          <span class="nav-item">Arrange</span>
+          <span class="nav-item">Resource</span>
+          <span class="nav-item">Help</span>
+        </nav>
+        
+        <!-- Right: Action Buttons -->
+        <div class="header-right">
+          <button class="header-btn reset-btn">
+            <span class="icon">↺</span>
+            Reset
+          </button>
+          
+          <button class="header-btn share-btn">
+            <span class="icon">�</span>
+            Share
+            <span class="dropdown-arrow">▼</span>
+          </button>
+          
+          <button class="header-btn primary view-btn">
+            <span class="icon">👁️</span>
+            View
+          </button>
+          
+          <button class="header-btn icon-only">⋮</button>
+          <button class="header-btn icon-only">❓</button>
+          
+          <div class="user-avatar">R</div>
+        </div>
       </div>
     </header>
     
     <!-- Main Toolbar -->
     <div class="main-toolbar">
       <div class="toolbar-left">
-        <button class="toolbar-btn icon-btn" title="Undo">↶</button>
-        <button class="toolbar-btn icon-btn" title="Redo">↷</button>
-        <div class="separator"></div>
-        <div class="page-navigation">
-          <span class="page-info">Page 1 of 2</span>
-          <button class="nav-btn" title="Previous page">←</button>
-          <button class="nav-btn" title="Next page">→</button>
-        </div>
-      </div>
-      
-      <div class="toolbar-center">
+        <button class="toolbar-btn icon-btn">↶</button>
+        <button class="toolbar-btn icon-btn">↷</button>
+        <button class="toolbar-btn icon-btn">🖱️</button>
+        <button class="toolbar-btn icon-btn">🔍</button>
+        <span class="separator"></span>
+        
+        <button class="toolbar-btn primary-btn">
+          📄 Add page
+        </button>
+        
         <button class="toolbar-btn primary-btn" (click)="onAddData()">
-          <span class="btn-icon">📊</span>
-          Add data
+          📊 Add data
         </button>
+        
         <button class="toolbar-btn">
-          <span class="btn-icon">🔄</span>
-          Blend
+          ⚫ Blend
         </button>
+        
         <button class="toolbar-btn dropdown-btn" (click)="onAddChart()">
-          <span class="btn-icon">📈</span>
-          Add a chart
-          <span class="dropdown-arrow">▼</span>
+          📈 Add a chart ▼
         </button>
+        
         <button class="toolbar-btn dropdown-btn">
-          <span class="btn-icon">🎛️</span>
-          Add a control
-          <span class="dropdown-arrow">▼</span>
+          🎛️ Add a control ▼
         </button>
-        <button class="toolbar-btn icon-btn" title="More options">⋮</button>
-        <button class="toolbar-btn icon-btn" title="Mobile view">📱</button>
-        <button class="toolbar-btn icon-btn" title="Preview">👁️</button>
+        
+        <span class="separator"></span>
+        
+        <button class="toolbar-btn icon-btn">📋</button>
+        <button class="toolbar-btn icon-btn">&lt;/&gt;</button>
+        <button class="toolbar-btn icon-btn">📏</button>
+        
+        <span class="separator"></span>
+        
+        <button class="toolbar-btn icon-btn">⊞</button>
       </div>
       
       <div class="toolbar-right">
-        <button class="theme-layout-btn" (click)="onThemePanel()">Theme and layout</button>
-        <button class="toolbar-btn">
-          <span class="btn-icon">⏸️</span>
-          Pause updates
+        <span class="theme-text" (click)="onThemePanel()">Theme and layout</span>
+        <button class="toolbar-btn pause-btn">
+          ⏸️ Pause updates
         </button>
       </div>
     </div>

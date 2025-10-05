@@ -16,50 +16,55 @@ import { CdkDrag, CdkDragDrop } from '@angular/cdk/drag-drop';
         <!-- Data Tab (Always visible when panelType is 'data') -->
         <div class="tab-content" [class.active]="panelType === 'data' || activeTab === 'data'">
           <div class="panel-header">
-            <h3>📊 Data</h3>
+            <div class="header-content">
+              <span class="panel-icon">📊</span>
+              <h3 class="panel-title">Data</h3>
+            </div>
           </div>
+          
           <div class="panel-content">
-            <div class="data-search">
+            <!-- Search Box -->
+            <div class="search-container">
               <input type="text" placeholder="Search" class="search-input" [(ngModel)]="dataSearchTerm">
             </div>
             
-            <div class="data-source-section" *ngIf="selectedDataSource">
-              <div class="data-source-header">
-                <span class="source-icon">📊</span>
-                <span class="source-name">{{ selectedDataSource }}</span>
-                <button class="close-source-btn">×</button>
+            <!-- Data Source Section -->
+            <div class="data-source-section">
+              <div class="data-source-item">
+                <div class="source-header">
+                  <span class="source-icon">📊</span>
+                  <span class="source-name">18-April-2025_FUELTRANSACTIO...</span>
+                  <button class="remove-btn">×</button>
+                </div>
               </div>
               
+              <!-- Field List -->
               <div class="field-list">
                 <div class="field-item" 
                      *ngFor="let field of dimensionFields" 
                      [attr.data-type]="field.type"
                      cdkDrag
                      [cdkDragData]="field">
-                  <span class="field-icon" [class]="'icon-' + field.type">{{ getFieldIcon(field.type) }}</span>
+                  <span class="field-type-badge" [class]="'type-' + field.type">{{ field.type }}</span>
                   <span class="field-name">{{ field.name }}</span>
                 </div>
               </div>
               
-              <div class="action-buttons">
-                <button class="action-btn" (click)="addField()">
-                  <span class="btn-icon">⊕</span>
+              <!-- Bottom Actions -->
+              <div class="panel-actions">
+                <button class="add-field-btn" (click)="addField()">
+                  <span class="add-icon">⊕</span>
                   Add a field
                 </button>
-                <button class="action-btn" (click)="addParameter()">
-                  <span class="btn-icon">⊕</span>
+                <button class="add-parameter-btn" (click)="addParameter()">
+                  <span class="add-icon">⊕</span>
                   Add a parameter
                 </button>
-                <button class="action-btn primary" (click)="onAddData()">
-                  <span class="btn-icon">⊕</span>
+                <button class="add-data-btn" (click)="onAddData()">
+                  <span class="add-icon">⊕</span>
                   Add Data
                 </button>
               </div>
-            </div>
-            
-            <div class="empty-state" *ngIf="!selectedDataSource">
-              <p>No data sources connected</p>
-              <button class="panel-button" (click)="onAddData()">Add data</button>
             </div>
           </div>
         </div>

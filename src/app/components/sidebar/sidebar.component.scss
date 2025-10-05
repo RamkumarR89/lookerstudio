@@ -1,12 +1,10 @@
-/* Sidebar Panel Styles */
+/* Exact Looker Studio Sidebar Styles */
 .vertical-tabs-panel {
-  width: 400px;
-  background: #ffffff;
-  border-left: 1px solid #dadce0;
-  display: none;
-  flex-direction: row;
-  box-shadow: -1px 0 2px 0 rgba(60, 64, 67, 0.1);
-  height: calc(100vh - 96px);
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
   
   &.show {
     display: flex;
@@ -15,9 +13,9 @@
 
 .tab-content-area {
   flex: 1;
-  background: white;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .tab-content {
@@ -32,21 +30,195 @@
 
 .panel-header {
   padding: 16px 20px;
-  border-bottom: 1px solid #dadce0;
-  background: #ffffff;
+  border-bottom: 1px solid #e8eaed;
+  background: #fff;
   
-  h3 {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 500;
-    color: #202124;
+  .header-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    .panel-icon {
+      font-size: 16px;
+    }
+    
+    .panel-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 500;
+      color: #202124;
+    }
   }
 }
 
 .panel-content {
   flex: 1;
-  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Search Container */
+.search-container {
+  padding: 16px 20px;
+  
+  .search-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    font-size: 14px;
+    background: #fff;
+    
+    &::placeholder {
+      color: #9aa0a6;
+    }
+    
+    &:focus {
+      outline: none;
+      border-color: #1a73e8;
+    }
+  }
+}
+
+/* Data Source Section */
+.data-source-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.data-source-item {
+  padding: 0 20px 16px 20px;
+  
+  .source-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #e8f5e8;
+    border-radius: 4px;
+    
+    .source-icon {
+      font-size: 14px;
+    }
+    
+    .source-name {
+      flex: 1;
+      font-size: 13px;
+      color: #202124;
+      font-weight: 500;
+    }
+    
+    .remove-btn {
+      background: none;
+      border: none;
+      color: #5f6368;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 2px;
+      
+      &:hover {
+        color: #202124;
+      }
+    }
+  }
+}
+
+/* Field List */
+.field-list {
+  flex: 1;
   overflow-y: auto;
+  padding: 0 20px;
+  
+  .field-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    cursor: pointer;
+    
+    &:hover {
+      background: #f8f9fa;
+      margin: 0 -8px;
+      padding: 6px 8px;
+      border-radius: 4px;
+    }
+    
+    .field-type-badge {
+      background: #f8f9fa;
+      color: #5f6368;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      min-width: 24px;
+      text-align: center;
+      
+      &.type-text {
+        background: #fce8e6;
+        color: #d93025;
+      }
+      
+      &.type-number {
+        background: #e8f0fe;
+        color: #1a73e8;
+      }
+      
+      &.type-date {
+        background: #e6f4ea;
+        color: #137333;
+      }
+    }
+    
+    .field-name {
+      font-size: 13px;
+      color: #202124;
+    }
+  }
+}
+
+/* Panel Actions */
+.panel-actions {
+  padding: 16px 20px;
+  border-top: 1px solid #e8eaed;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  
+  .add-field-btn,
+  .add-parameter-btn,
+  .add-data-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: none;
+    background: none;
+    color: #1a73e8;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 4px;
+    text-align: left;
+    
+    &:hover {
+      background: #f8f9fa;
+    }
+    
+    .add-icon {
+      font-size: 14px;
+    }
+  }
+  
+  .add-data-btn {
+    background: #1a73e8;
+    color: #fff;
+    
+    &:hover {
+      background: #1557b0;
+    }
+  }
 }
 
 /* Chart Types Section */

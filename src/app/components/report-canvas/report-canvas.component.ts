@@ -10,50 +10,64 @@ import { CdkDropList, CdkDrag, CdkDragDrop } from '@angular/cdk/drag-drop';
   template: `
     <div class="canvas-container">
       
-      <!-- Canvas Controls -->
-      <div class="canvas-controls">
-        <button class="filter-btn">
-          <span class="filter-icon">⚡</span>
-          Add filter
+      <!-- Canvas Controls - Add Filter -->
+      <div class="canvas-top-controls">
+        <button class="add-filter-btn">
+          ⚡ Add filter
         </button>
-        
-        <div class="layout-controls">
-          <button class="layout-btn active">
-            <span class="checkmark">✓</span>
-            Freeform layout
-          </button>
-          <button class="layout-btn">
-            Responsive layout
-          </button>
-        </div>
       </div>
       
       <!-- Main Canvas -->
-      <div class="canvas" cdkDropList (cdkDropListDropped)="onDrop($event)">
+      <div class="canvas-area" cdkDropList (cdkDropListDropped)="onDrop($event)">
+        
+        <!-- Layout Toggle Buttons -->
+        <div class="layout-controls">
+          <button class="layout-toggle active">
+            ✓ Freeform layout
+          </button>
+          <button class="layout-toggle">
+            Responsive layout
+          </button>
+        </div>
+        
         <!-- Empty State (when no charts) -->
-        <div class="canvas-placeholder" *ngIf="!hasCharts">
-          <div class="placeholder-content">
+        <div class="empty-state" *ngIf="!hasCharts">
+          <div class="illustration-container">
+            <!-- Chart Illustration -->
             <div class="chart-illustration">
-              <!-- Chart bars on the left -->
               <div class="chart-bars">
-                <div class="bar bar-yellow"></div>
-                <div class="bar bar-red"></div>
-                <div class="bar bar-blue"></div>
-                <div class="bar bar-green"></div>
-                <div class="bar bar-purple"></div>
+                <div class="bar orange" style="height: 20px;"></div>
+                <div class="bar yellow" style="height: 35px;"></div>
+                <div class="bar red" style="height: 45px;"></div>
+                <div class="bar blue" style="height: 30px;"></div>
+                <div class="bar green" style="height: 50px;"></div>
+                <div class="bar purple" style="height: 25px;"></div>
               </div>
-              <!-- Dots and circles on the right -->
               <div class="chart-elements">
-                <div class="dot dot-orange"></div>
-                <div class="circle-outline"></div>
-                <div class="circle-outline medium"></div>
-                <div class="circle-outline small"></div>
-                <div class="dot dot-red"></div>
-                <div class="dot dot-blue"></div>
+                <div class="dot orange"></div>
+                <div class="circle-lg"></div>
+                <div class="circle-md"></div>
+                <div class="circle-sm"></div>
+                <div class="dot red"></div>
+                <div class="dot blue"></div>
               </div>
             </div>
-            <h2>Let's get started</h2>
-            <p>Drag a field from the Data Panel to the canvas to add a new chart or select a component on the report canvas to edit it.</p>
+          </div>
+          
+          <h2 class="empty-title">Let's get started</h2>
+          <p class="empty-description">
+            Drag a field from the Data Panel to the canvas to add a new chart or 
+            select a component on the report canvas to edit it.
+          </p>
+          
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button class="action-btn primary" (click)="onAddChart()">
+              📊 Add chart
+            </button>
+            <button class="action-btn secondary">
+              🎛️ Add control
+            </button>
           </div>
         </div>
         
@@ -63,18 +77,6 @@ import { CdkDropList, CdkDrag, CdkDragDrop } from '@angular/cdk/drag-drop';
           [isSelected]="selectedComponent === 'table'" 
           (selected)="onSelectTable()">
         </app-data-table>
-        
-        <!-- Floating Action Buttons -->
-        <div class="canvas-actions" *ngIf="!hasCharts">
-          <button class="action-btn chart-btn" (click)="onAddChart()">
-            <span class="btn-icon">📊</span>
-            Add chart
-          </button>
-          <button class="action-btn control-btn">
-            <span class="btn-icon">🎛️</span>
-            Add control
-          </button>
-        </div>
       </div>
     </div>
   `,

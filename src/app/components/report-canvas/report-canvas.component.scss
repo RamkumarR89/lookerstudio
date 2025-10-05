@@ -1,76 +1,71 @@
-/* Report Canvas Styles */
+/* Exact Looker Studio Canvas Styles */
 .canvas-container {
   flex: 1;
   background: #f8f9fa;
-  padding: 16px;
-  overflow: auto;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
-/* Canvas Controls */
-.canvas-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  padding: 0 4px;
-}
-
-.filter-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background: white;
-  border: 1px solid #dadce0;
-  border-radius: 6px;
-  color: #1a73e8;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+/* Top Controls */
+.canvas-top-controls {
+  padding: 16px 24px 0 24px;
   
-  &:hover {
-    background: #f8f9fa;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .filter-icon {
-    font-size: 16px;
+  .add-filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: none;
+    border: none;
     color: #1a73e8;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 4px;
+    
+    &:hover {
+      background: #f8f9fa;
+    }
   }
 }
 
-.layout-controls {
-  display: flex;
-  background: white;
-  border: 1px solid #dadce0;
-  border-radius: 6px;
+.canvas-area {
+  flex: 1;
+  background: #fff;
+  margin: 16px 24px 24px 24px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(60,64,67,0.1);
+  border: 1px solid #e8eaed;
+  position: relative;
+  min-height: 500px;
   overflow: hidden;
 }
 
-.layout-btn {
+.layout-controls {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  background: #fff;
+  border: 1px solid #dadce0;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(60,64,67,0.1);
+  z-index: 10;
+}
+
+.layout-toggle {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   padding: 8px 16px;
-  background: white;
+  background: #fff;
   border: none;
   color: #5f6368;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
   transition: all 0.2s ease;
-  position: relative;
-  
-  &:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 25%;
-    bottom: 25%;
-    width: 1px;
-    background: #dadce0;
-  }
   
   &:hover {
     background: #f8f9fa;
@@ -79,229 +74,171 @@
   &.active {
     background: #e8f0fe;
     color: #1a73e8;
-    
-    .checkmark {
-      color: #1a73e8;
-    }
-  }
-  
-  .checkmark {
-    font-size: 12px;
-    color: transparent;
   }
 }
 
-.canvas {
-  width: 100%;
-  min-height: calc(100vh - 200px);
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.1);
-  border: 1px solid #dadce0;
-  position: relative;
-  flex: 1;
-  transition: all 0.2s ease;
-  
-  &.cdk-drop-list-dragging {
-    background: #f8f9fa;
-    border: 2px dashed #1a73e8;
-    
-    .canvas-placeholder {
-      opacity: 0.5;
-    }
-  }
-}
-
-.canvas-placeholder {
+.empty-state {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100%;
-  min-height: 400px;
+  padding: 60px 40px;
+  text-align: center;
 }
 
-.placeholder-content {
-  text-align: center;
-  max-width: 500px;
-  padding: 40px 20px;
-  
-  h2 {
-    color: #202124;
-    font-size: 28px;
-    font-weight: 400;
-    margin: 32px 0 16px 0;
-    font-family: 'Google Sans', 'Roboto', sans-serif;
-  }
-  
-  p {
-    color: #5f6368;
-    font-size: 16px;
-    line-height: 1.6;
-    margin: 0;
-    max-width: 450px;
-    margin: 0 auto;
-  }
+.illustration-container {
+  margin-bottom: 40px;
+}
+
+.empty-title {
+  color: #202124;
+  font-size: 24px;
+  font-weight: 400;
+  margin: 0 0 16px 0;
+  font-family: 'Google Sans', 'Roboto', sans-serif;
+}
+
+.empty-description {
+  color: #5f6368;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 32px 0;
+  max-width: 400px;
 }
 
 .chart-illustration {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 40px;
-  margin-bottom: 32px;
+  gap: 60px;
   position: relative;
+  width: 200px;
+  height: 80px;
 }
 
 .chart-bars {
   display: flex;
   align-items: end;
-  gap: 3px;
+  gap: 4px;
+  height: 60px;
   
   .bar {
-    width: 14px;
-    border-radius: 2px;
-    animation: fadeInUp 0.6s ease;
+    width: 8px;
+    border-radius: 1px;
     
-    &.bar-yellow {
-      height: 25px;
-      background: #fbbc04;
-    }
-    
-    &.bar-red {
-      height: 45px;
-      background: #ea4335;
-    }
-    
-    &.bar-blue {
-      height: 35px;
-      background: #4285f4;
-    }
-    
-    &.bar-green {
-      height: 55px;
-      background: #34a853;
-    }
-    
-    &.bar-purple {
-      height: 30px;
-      background: #9c27b0;
-    }
+    &.orange { background: #ff6d01; }
+    &.yellow { background: #ffab00; }
+    &.red { background: #ea4335; }
+    &.blue { background: #4285f4; }
+    &.green { background: #34a853; }
+    &.purple { background: #9c27b0; }
   }
 }
 
 .chart-elements {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
   position: relative;
+  width: 80px;
+  height: 60px;
   
   .dot {
+    position: absolute;
     border-radius: 50%;
-    animation: fadeInUp 0.8s ease;
     
-    &.dot-orange {
-      width: 12px;
-      height: 12px;
-      background: #ff9800;
-      position: absolute;
-      top: -10px;
-      left: -15px;
-    }
-    
-    &.dot-red {
-      width: 10px;
-      height: 10px;
-      background: #ea4335;
-      position: absolute;
-      bottom: 10px;
-      right: -20px;
-    }
-    
-    &.dot-blue {
+    &.orange {
       width: 8px;
       height: 8px;
-      background: #4285f4;
-      position: absolute;
-      bottom: -10px;
+      background: #ff6d01;
+      top: 5px;
       left: 10px;
+    }
+    
+    &.red {
+      width: 6px;
+      height: 6px;
+      background: #ea4335;
+      bottom: 15px;
+      right: 5px;
+    }
+    
+    &.blue {
+      width: 4px;
+      height: 4px;
+      background: #4285f4;
+      bottom: 5px;
+      left: 15px;
     }
   }
   
-  .circle-outline {
-    border: 2px solid #dadce0;
+  .circle-lg {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #e0e0e0;
     border-radius: 50%;
-    background: white;
-    
-    &:not(.medium):not(.small) {
-      width: 50px;
-      height: 50px;
-    }
-    
-    &.medium {
-      width: 35px;
-      height: 35px;
-      margin-left: 20px;
-    }
-    
-    &.small {
-      width: 25px;
-      height: 25px;
-      margin-left: -10px;
-    }
+    top: 10px;
+    left: 20px;
+    background: #fff;
+  }
+  
+  .circle-md {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 2px solid #e0e0e0;
+    border-radius: 50%;
+    top: 15px;
+    right: 15px;
+    background: #fff;
+  }
+  
+  .circle-sm {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 50%;
+    bottom: 10px;
+    left: 5px;
+    background: #fff;
   }
 }
 
-/* Floating Action Buttons */
-.canvas-actions {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+.action-buttons {
   display: flex;
   gap: 12px;
-  z-index: 10;
+  justify-content: center;
 }
 
 .action-btn {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 16px;
-  background: white;
+  padding: 8px 16px;
   border: 1px solid #dadce0;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
+  border-radius: 4px;
+  font-size: 13px;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   
-  &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transform: translateY(-1px);
-  }
-  
-  .btn-icon {
-    font-size: 16px;
-  }
-  
-  &.chart-btn {
+  &.primary {
     background: #1a73e8;
-    color: white;
+    color: #fff;
     border-color: #1a73e8;
     
     &:hover {
       background: #1557b0;
-      border-color: #1557b0;
     }
   }
   
-  &.control-btn {
-    color: #202124;
+  &.secondary {
+    background: #fff;
+    color: #5f6368;
     
     &:hover {
       background: #f8f9fa;
+      border-color: #1a73e8;
+      color: #1a73e8;
     }
   }
 }
