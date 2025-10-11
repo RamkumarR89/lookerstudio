@@ -25,6 +25,7 @@ import {
 export class GridDashboard2Component implements OnInit {
   options!: GridsterConfig;
   dashboard!: Array<GridsterItem & { type?: string }>;
+  showChartModal = false;
 
   ngOnInit() {
     this.options = {
@@ -96,11 +97,61 @@ export class GridDashboard2Component implements OnInit {
       scrollToNewItems: false
     };
 
-    this.dashboard = [
-      { cols: 1, rows: 1, y: 0, x: 0, type: 'scatter' },
-      { cols: 1, rows: 1, y: 0, x: 1, type: 'pie' },
-      { cols: 1, rows: 1, y: 1, x: 2, type: 'line' },
-      { cols: 1, rows: 1, y: 2, x: 0, type: 'bar' }
-    ];
+    // Start with empty grid - charts will be added via "Add chart" button
+    this.dashboard = [];
+  }
+
+  // Open chart selection modal (public method for header button)
+  public openAddChartModal() {
+    this.showChartModal = true;
+  }
+
+  // Close chart selection modal
+  closeAddChartModal() {
+    this.showChartModal = false;
+  }
+
+  // Add a new chart to the grid
+  addChartToGrid(chartType: 'table' | 'scatter' | 'pie' | 'line' | 'bar' | 'scorecard') {
+    // Find the next available position in the 3x3 grid
+    const nextPosition = this.findNextAvailablePosition();
+    
+    if (nextPosition) {
+      const newChart = {
+        cols: 1,
+        rows: 1,
+        x: nextPosition.x,
+        y: nextPosition.y,
+        type: chartType
+      };
+      
+      this.dashboard.push(newChart);
+      console.log('Added chart:', newChart);
+    } else {
+      console.log('Grid is full - maximum 9 charts allowed');
+      // Could show a notification here
+    }
+    
+    // Close the modal
+    this.closeAddChartModal();
+  }
+
+  // Find next available position in 3x3 grid
+  private findNextAvailablePosition(): { x: number, y: number } | null {
+    // Check all positions in 3x3 grid
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 3; x++) {
+        // Check if this position is occupied
+        const isOccupied = this.dashboard.some(item => 
+          item.x === x && item.y === y
+        );
+        
+        if (!isOccupied) {
+          return { x, y };
+        }
+      }
+    }
+    
+    return null; // Grid is full
   }
 }

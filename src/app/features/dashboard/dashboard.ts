@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
@@ -29,7 +29,7 @@ import { PropertiesPanelComponent } from '../../components/properties-panel/prop
       <div class="main-layout" [class.sidebar-open]="sidebarOpen" [class.content-visible]="contentVisible">
         <!-- Report Canvas (Left) -->
         <div class="canvas-area" [class.sidebar-open]="sidebarOpen" [class.content-visible]="contentVisible">
-          <app-grid-dashboard-2></app-grid-dashboard-2>
+          <app-grid-dashboard-2 #gridDashboard></app-grid-dashboard-2>
         </div>
 
         <!-- Right Side: Vertical Sidebar -->
@@ -208,6 +208,8 @@ import { PropertiesPanelComponent } from '../../components/properties-panel/prop
   styleUrl: './dashboard.scss'
 })
 export class Dashboard implements OnInit {
+  @ViewChild('gridDashboard') gridDashboard!: GridDashboard2Component;
+  
   showAddDataModal = false;
   showAddChartModal = false;
   showThemePanel = false;
@@ -264,7 +266,10 @@ export class Dashboard implements OnInit {
   }
 
   openAddChartModal() {
-    this.showAddChartModal = true;
+    // Delegate to the grid component's modal
+    if (this.gridDashboard) {
+      this.gridDashboard.openAddChartModal();
+    }
   }
 
   closeAddChartModal() {

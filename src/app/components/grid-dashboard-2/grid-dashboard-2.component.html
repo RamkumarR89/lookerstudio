@@ -1,3 +1,4 @@
+<!-- Gridster Dashboard -->
 <gridster [options]="options">
   <gridster-item [item]="item" *ngFor="let item of dashboard">
     <div class="widget-container">
@@ -8,3 +9,76 @@
     </div>
   </gridster-item>
 </gridster>
+
+<!-- Chart Selection Modal -->
+<div class="chart-modal-overlay" *ngIf="showChartModal" (click)="closeAddChartModal()">
+  <div class="chart-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Insert a chart</h2>
+      <button class="close-btn" (click)="closeAddChartModal()">×</button>
+    </div>
+    
+    <div class="modal-content">
+      <!-- Table Section -->
+      <div class="chart-section">
+        <h3>Table</h3>
+        <div class="chart-options">
+          <div class="chart-option" (click)="addChartToGrid('table')">
+            <div class="chart-preview">📋</div>
+            <span class="chart-name">Table</span>
+          </div>
+          <div class="chart-option" (click)="addChartToGrid('table')">
+            <div class="chart-preview">📊</div>
+            <span class="chart-name">Table with heatmap</span>
+          </div>
+          <div class="chart-option" (click)="addChartToGrid('bar')">
+            <div class="chart-preview">📊</div>
+            <span class="chart-name">Table with bars</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Scorecard Section -->
+      <div class="chart-section">
+        <h3>Scorecard</h3>
+        <div class="chart-options">
+          <div class="chart-option" (click)="addChartToGrid('scorecard')">
+            <div class="chart-preview">🔢</div>
+            <span class="chart-name">Scorecard</span>
+          </div>
+          <div class="chart-option" (click)="addChartToGrid('scorecard')">
+            <div class="chart-preview">📈</div>
+            <span class="chart-name">Compact scorecard</span>
+          </div>
+          <div class="chart-option" (click)="addChartToGrid('scatter')">
+            <div class="chart-preview">⚫</div>
+            <span class="chart-name">Bullet chart</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- More Chart Types -->
+      <div class="chart-section">
+        <h3>Charts</h3>
+        <div class="chart-options">
+          <div class="chart-option" (click)="addChartToGrid('scatter')">
+            <div class="chart-preview">⚫</div>
+            <span class="chart-name">Scatter</span>
+          </div>
+          <div class="chart-option" (click)="addChartToGrid('pie')">
+            <div class="chart-preview">🥧</div>
+            <span class="chart-name">Pie</span>
+          </div>
+          <div class="chart-option" (click)="addChartToGrid('line')">
+            <div class="chart-preview">📈</div>
+            <span class="chart-name">Line</span>
+          </div>
+          <div class="chart-option" (click)="addChartToGrid('bar')">
+            <div class="chart-preview">📊</div>
+            <span class="chart-name">Bar</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

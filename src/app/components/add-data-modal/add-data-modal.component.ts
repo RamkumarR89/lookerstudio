@@ -17,7 +17,9 @@ interface DataConnector {
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="bottom-panel" [class.show]="isVisible">
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" *ngIf="isVisible" (click)="onClose()">
+      <div class="bottom-panel show" (click)="$event.stopPropagation()">
       
       <!-- Panel Header -->
       <div class="panel-header">
@@ -120,6 +122,7 @@ interface DataConnector {
         </div>
       </div>
 
+      </div>
     </div>
   `,
   styleUrl: './add-data-modal.component.scss'

@@ -12,6 +12,7 @@ import { BarChartComponent } from '../charts/bar-chart/bar-chart.component';
 import { LineChartComponent } from '../charts/line-chart/line-chart.component';
 import { TableChartComponent } from '../charts/table-chart/table-chart.component';
 import { ScatterChartComponent } from '../charts/scatter-chart/scatter-chart.component';
+import { ScorecardChartComponent } from '../charts/scorecard-chart/scorecard-chart.component';
 
 @Component({
   selector: 'widget',
@@ -74,6 +75,12 @@ export class WidgetComponent implements OnInit, AfterViewInit {
         const tableRef = this.component.createComponent(TableChartComponent);
         if (this.chartData) {
           tableRef.instance.data = this.chartData;
+        }
+        break;
+      case 'scorecard':
+        const scorecardRef = this.component.createComponent(ScorecardChartComponent);
+        if (this.chartData) {
+          scorecardRef.instance.data = this.chartData;
         }
         break;
       default:
