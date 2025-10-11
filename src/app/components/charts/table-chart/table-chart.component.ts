@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -18,13 +18,14 @@ import { CommonModule } from '@angular/common';
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of tableData">
+            <tr *ngFor="let item of tableData; let i = index">
               <td>{{ item.label }}</td>
               <td>{{ item.value }}</td>
               <td>{{ item.percentage }}%</td>
             </tr>
           </tbody>
         </table>
+        <p *ngIf="tableData.length === 0" class="no-data-message">No data available</p>
       </div>
     </div>
   `,
@@ -82,9 +83,16 @@ import { CommonModule } from '@angular/common';
     .data-table tbody tr:hover {
       background-color: #f8f9fa;
     }
+    .no-data-message {
+      text-align: center;
+      color: #5f6368;
+      font-style: italic;
+      padding: 20px;
+      margin: 0;
+    }
   `]
 })
-export class TableChartComponent implements OnInit {
+export class TableChartComponent implements OnInit, OnChanges {
   @Input() title: string = 'Data Table';
   @Input() data: any[] = [];
 
@@ -94,9 +102,15 @@ export class TableChartComponent implements OnInit {
     this.setupTableData();
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['data']) {
+      this.setupTableData();
+    }
+  }
+
   private setupTableData() {
     // Default sample data if no data provided
-    const sampleData = this.data.length > 0 ? this.data : [
+    const defaultSampleData = [
       { label: 'Princess Cruise Line', value: 17 },
       { label: 'Holland America', value: 11 },
       { label: 'Carnival Cruise', value: 8 },
@@ -104,6 +118,9 @@ export class TableChartComponent implements OnInit {
       { label: 'Costa Crociere', value: 7 },
       { label: 'P&O Cruises', value: 4 }
     ];
+
+    // Use provided data if available and not empty, otherwise use default sample data
+    const sampleData = (this.data && this.data.length > 0) ? this.data : defaultSampleData;
 
     const total = sampleData.reduce((sum, item) => sum + item.value, 0);
     

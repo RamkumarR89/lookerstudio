@@ -49,39 +49,27 @@ export class WidgetComponent implements OnInit, AfterViewInit {
     switch(this.chartType) {
       case 'scatter':
         const scatterRef = this.component.createComponent(ScatterChartComponent);
-        if (this.chartData) {
-          scatterRef.instance.data = this.chartData;
-        }
+        scatterRef.instance.data = this.chartData || [];
         break;
       case 'pie':
         const pieRef = this.component.createComponent(PieChartComponent);
-        if (this.chartData) {
-          pieRef.instance.data = this.chartData;
-        }
+        pieRef.instance.data = this.chartData || [];
         break;
       case 'line':
         const lineRef = this.component.createComponent(LineChartComponent);
-        if (this.chartData) {
-          lineRef.instance.data = this.chartData;
-        }
+        lineRef.instance.data = this.chartData || [];
         break;
       case 'bar':
         const barRef = this.component.createComponent(BarChartComponent);
-        if (this.chartData) {
-          barRef.instance.data = this.chartData;
-        }
+        barRef.instance.data = this.chartData || [];
         break;
       case 'table':
         const tableRef = this.component.createComponent(TableChartComponent);
-        if (this.chartData) {
-          tableRef.instance.data = this.chartData;
-        }
+        tableRef.instance.data = this.chartData || [];
         break;
       case 'scorecard':
         const scorecardRef = this.component.createComponent(ScorecardChartComponent);
-        if (this.chartData) {
-          scorecardRef.instance.data = this.chartData;
-        }
+        scorecardRef.instance.data = this.chartData || [];
         break;
       default:
         // Default to scatter chart

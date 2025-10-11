@@ -5,6 +5,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { ReportCanvasComponent } from '../../components/report-canvas/report-canvas.component';
 import { GridDashboard2Component } from '../../components/grid-dashboard-2/grid-dashboard-2.component';
+import { DashboardPreviewModalComponent, DashboardPreviewData } from '../../components/dashboard-preview-modal/dashboard-preview-modal.component';
 import { ThemePanelComponent } from '../../components/theme-panel/theme-panel.component';
 import { AddDataModalComponent } from '../../components/add-data-modal/add-data-modal.component';
 import { AddChartModalComponent } from '../../components/add-chart-modal/add-chart-modal.component';
@@ -13,7 +14,7 @@ import { PropertiesPanelComponent } from '../../components/properties-panel/prop
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [FormsModule, CommonModule, HeaderComponent, GridDashboard2Component, ThemePanelComponent, AddDataModalComponent, AddChartModalComponent],
+  imports: [FormsModule, CommonModule, HeaderComponent, GridDashboard2Component, DashboardPreviewModalComponent, ThemePanelComponent, AddDataModalComponent, AddChartModalComponent],
   template: `
     <!-- Clean Looker Studio Layout -->
     <div class="looker-studio">
@@ -22,7 +23,8 @@ import { PropertiesPanelComponent } from '../../components/properties-panel/prop
       <app-header 
         (addDataClicked)="openAddDataModal()"
         (addChartClicked)="openAddChartModal()"
-        (themePanelClicked)="openThemePanel()">
+        (themePanelClicked)="openThemePanel()"
+        (viewClicked)="openPreviewModal()">
       </app-header>
 
       <!-- Main Content Layout -->
@@ -204,6 +206,13 @@ import { PropertiesPanelComponent } from '../../components/properties-panel/prop
       (closeModal)="closeAddChartModal()"
       (chartSelected)="onChartSelected($event)">
     </app-add-chart-modal>
+    
+    <!-- Dashboard Preview Modal -->
+    <app-dashboard-preview-modal
+      [isVisible]="showPreviewModal"
+      [dashboardData]="previewData"
+      (closeModal)="closePreviewModal()">
+    </app-dashboard-preview-modal>
   `,
   styleUrl: './dashboard.scss'
 })
@@ -213,6 +222,7 @@ export class Dashboard implements OnInit {
   showAddDataModal = false;
   showAddChartModal = false;
   showThemePanel = false;
+  showPreviewModal = false;
   showRightDataPanel = true;
   showRightPropertiesPanel = true;
   selectedTheme: 'edge' | 'constellation' | 'groovy' = 'edge';
@@ -220,6 +230,13 @@ export class Dashboard implements OnInit {
   activeSidebarTab: 'data' | 'properties' | 'filter' = 'data';
   sidebarOpen = false; // Initially hidden completely
   contentVisible = false; // Content panel visibility
+
+  previewData: DashboardPreviewData = {
+    title: 'Dashboard Report',
+    lastUpdated: new Date().toLocaleDateString(),
+    chartCount: 4,
+    charts: []
+  };
 
   get sidebarPanelType(): 'data' | 'properties' {
     return this.activeSidebarTab === 'properties' ? 'properties' : 'data';
@@ -317,5 +334,43 @@ export class Dashboard implements OnInit {
   onChartAdded() {
     // When a chart is added (either through header or canvas button)
     this.selectedComponent = 'table';
+  }
+
+  openPreviewModal() {
+    // Get current charts from grid dashboard
+    if (this.gridDashboard && this.gridDashboard.dashboard) {
+      this.previewData = {
+        title: 'Dashboard Report',
+        lastUpdated: new Date().toLocaleDateString(),
+        chartCount: this.gridDashboard.dashboard.length,
+        charts: this.gridDashboard.dashboard.map((item, index) => ({
+          id: `chart-${index}`,
+          type: (item.type || 'scatter') as 'pie' | 'bar' | 'line' | 'scatter' | 'table' | 'scorecard',
+          title: this.getChartTitle(item.type || 'scatter'),
+          x: item.x || 0,
+          y: item.y || 0,
+          cols: item.cols || 1,
+          rows: item.rows || 1,
+          data: null
+        }))
+      };
+    }
+    this.showPreviewModal = true;
+  }
+
+  private getChartTitle(type: string): string {
+    const titles: { [key: string]: string } = {
+      'scatter': 'Scatter Plot',
+      'pie': 'Pie Chart',
+      'line': 'Line Chart',
+      'bar': 'Bar Chart',
+      'table': 'Table Chart',
+      'scorecard': 'Scorecard'
+    };
+    return titles[type] || 'Chart';
+  }
+
+  closePreviewModal() {
+    this.showPreviewModal = false;
   }
 }

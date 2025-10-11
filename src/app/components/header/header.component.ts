@@ -41,7 +41,7 @@ import { FormsModule } from '@angular/forms';
             <span class="dropdown-arrow">▼</span>
           </button>
           
-          <button class="header-btn primary view-btn">
+          <button class="header-btn primary view-btn" (click)="onView()">
             <span class="icon">👁️</span>
             View
           </button>
@@ -108,6 +108,7 @@ export class HeaderComponent {
   @Output() addDataClicked = new EventEmitter<void>();
   @Output() addChartClicked = new EventEmitter<void>();
   @Output() themePanelClicked = new EventEmitter<void>();
+  @Output() viewClicked = new EventEmitter<void>();
 
   onAddData() {
     this.addDataClicked.emit();
@@ -119,5 +120,9 @@ export class HeaderComponent {
 
   onThemePanel() {
     this.themePanelClicked.emit();
+  }
+
+  onView() {
+    this.viewClicked.emit();
   }
 }
