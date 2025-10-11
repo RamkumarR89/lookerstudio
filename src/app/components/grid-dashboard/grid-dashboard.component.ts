@@ -34,57 +34,46 @@ export class GridDashboardComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngOnInit() {
     this.options = {
-      gridType: GridType.ScrollVertical,
+      gridType: GridType.Fit,
       compactType: CompactType.None,
-      margin: 8, // Reduced margin for 100% zoom
+      margin: 10,
       outerMargin: true,
-      outerMarginTop: 10, // Reduced margins
-      outerMarginRight: 10,
-      outerMarginBottom: 10,
-      outerMarginLeft: 10,
-      mobileBreakpoint: 768,
+      outerMarginTop: null,
+      outerMarginRight: null,
+      outerMarginBottom: null,
+      outerMarginLeft: null,
+      useTransformPositioning: true,
+      mobileBreakpoint: 200,
       minCols: 1,
-      maxCols: 16, // Increased for more flexibility
+      maxCols: 100,
       minRows: 1,
-      maxRows: 50,
-      maxItemCols: 16,
+      maxRows: 100,
+      maxItemCols: 100,
       minItemCols: 1,
-      maxItemRows: 10,
+      maxItemRows: 100,
       minItemRows: 1,
-      maxItemArea: 2500,
+      maxItemArea: 500,
       minItemArea: 1,
-      defaultItemCols: 4, // Better default width
-      defaultItemRows: 4, // Much taller default height
-      fixedColWidth: 120, // Wider columns for better content
-      fixedRowHeight: 120, // Much taller rows for proper chart display
-      keepFixedHeightInMobile: true,
-      keepFixedWidthInMobile: true,
+      defaultItemCols: 1,
+      defaultItemRows: 1,
+      fixedColWidth: 300,
+      fixedRowHeight: 200,
+      keepFixedHeightInMobile: false,
+      keepFixedWidthInMobile: false,
       scrollSensitivity: 10,
       scrollSpeed: 20,
       enableEmptyCellClick: false,
       enableEmptyCellContextMenu: false,
       enableEmptyCellDrop: false,
       enableEmptyCellDrag: false,
+      emptyCellDragMaxCols: 50,
+      emptyCellDragMaxRows: 50,
+      ignoreMarginInRow: false,
       draggable: {
-        enabled: true,
-        ignoreContentClass: 'gridster-item-content',
-        ignoreContent: false,
-        dragHandleClass: 'drag-handler',
-        stop: undefined,
-        start: undefined
+        enabled: true
       },
       resizable: {
-        enabled: true,
-        handles: {
-          s: true,
-          e: true,
-          n: true,
-          w: true,
-          se: true,
-          ne: true,
-          sw: true,
-          nw: true
-        }
+        enabled: true
       },
       swap: false,
       pushItems: true,
@@ -92,55 +81,22 @@ export class GridDashboardComponent implements OnInit, AfterViewInit, OnDestroy 
       disablePushOnResize: false,
       pushDirections: { north: true, east: true, south: true, west: true },
       pushResizeItems: false,
-      displayGrid: DisplayGrid.OnDragAndResize,
+      displayGrid: DisplayGrid.Always,
       disableWindowResize: false,
       disableWarnings: false,
-      scrollToNewItems: false,
-      itemChangeCallback: (item: GridsterItem) => {
-        // Handle item position changes
-        this.handleGridItemChange(item);
-      },
-      itemResizeCallback: (item: GridsterItem) => {
-        // Handle item resize and trigger chart resize
-        this.handleGridItemResize(item);
-      },
-      itemInitCallback: (item: GridsterItem) => {
-        // Handle item initialization
-        this.handleGridItemInit(item);
-      }
+      scrollToNewItems: false
     };
     
-    // Initialize with Looker Studio layout
+    // 2x2 Grid Layout using working pattern
     this.dashboard = [
-      {
-        cols: 4,
-        rows: 4,
-        x: 0,
-        y: 0,
-        type: 'pie'
-      },
-      {
-        cols: 4,
-        rows: 4,
-        x: 4,
-        y: 0,
-        type: 'table'
-      },
-      {
-        cols: 4,
-        rows: 3,
-        x: 8,
-        y: 0,
-        type: 'bar'
-      },
-      {
-        cols: 6,
-        rows: 3,
-        x: 0,
-        y: 4,
-        type: 'scatter'
-      }
+      { cols: 2, rows: 1, y: 0, x: 0, type: 'scatter' },
+      { cols: 2, rows: 1, y: 0, x: 2, type: 'pie' },
+      { cols: 2, rows: 1, y: 1, x: 0, type: 'line' },
+      { cols: 2, rows: 1, y: 1, x: 2, type: 'bar' }
     ];
+    
+    console.log('Dashboard initialized with 2x2 grid (4 charts):', this.dashboard);
+    console.log('Grid options:', this.options);
   }
 
   toggleChartDropdown() {
@@ -153,16 +109,24 @@ export class GridDashboardComponent implements OnInit, AfterViewInit, OnDestroy 
       this.dashboard = [];
     }
     
-    // Calculate next position in a 3-column grid for better fixed sizing
-    const currentRow = Math.floor(this.dashboard.length / 3);
-    const currentCol = this.dashboard.length % 3;
+    // Calculate next position using 2x2 layout (2 per row, max 2 rows = 4 charts total)
+    const maxCharts = 4; // Maximum 2 charts per row × 2 rows = 4 charts
     
-    const x = currentCol * 4;
-    const y = currentRow * 4; // Better row spacing with fixed heights
+    if (this.dashboard.length >= maxCharts) {
+      // Don't add more charts if we've reached the maximum
+      this.showChartDropdown = false;
+      return;
+    }
     
-    // Determine appropriate size based on chart type
-    let cols = 4;
-    let rows = type === 'table' ? 3 : 4;
+    const currentRow = Math.floor(this.dashboard.length / 2);
+    const currentCol = this.dashboard.length % 2;
+    
+    const x = currentCol * 2; // Column position (0 or 2)
+    const y = currentRow; // Row position (0 or 1)
+    
+    // Determine appropriate size for 2x2 layout
+    let cols = 2; // Two grid cells width
+    let rows = 1; // One grid cell height
     
     const newItem = {
       cols: cols,
@@ -174,10 +138,10 @@ export class GridDashboardComponent implements OnInit, AfterViewInit, OnDestroy 
     
     this.dashboard.push(newItem);
     
-    // Trigger chart resize after new chart is added
+    // Automatically arrange in side-by-side layout after adding
     setTimeout(() => {
-      this.resizeAllCharts();
-    }, 100);
+      this.autoArrangeSideBySide();
+    }, 50);
     
     // Close dropdown after selection
     this.showChartDropdown = false;
@@ -209,10 +173,14 @@ export class GridDashboardComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ngAfterViewInit() {
-    // Trigger initial chart resize after view is initialized
+    // Force gridster to recognize all items
     setTimeout(() => {
+      if (this.options.api) {
+        this.options.api.optionsChanged!();
+      }
       this.resizeAllCharts();
-    }, 100);
+      console.log('AfterViewInit - Dashboard items:', this.dashboard.length);
+    }, 200);
   }
 
   ngOnDestroy() {
@@ -294,6 +262,29 @@ export class GridDashboardComponent implements OnInit, AfterViewInit, OnDestroy 
         }
       });
     }, 50);
+  }
+
+  // Automatically arrange charts in 2x2 layout
+  private autoArrangeSideBySide() {
+    this.dashboard.forEach((item, index) => {
+      const row = Math.floor(index / 2); // 2 charts per row
+      const col = index % 2; // Column position (0 or 1)
+      
+      item.x = col * 2; // Column position (0 or 2)
+      item.y = row; // Row position (0 or 1)
+      item.cols = 2; // 2 grid cells width
+      item.rows = 1; // 1 grid cell height
+    });
+    
+    // Trigger gridster update
+    if (this.options.api && this.options.api.optionsChanged) {
+      this.options.api.optionsChanged();
+    }
+    
+    // Resize charts after layout change
+    setTimeout(() => {
+      this.resizeAllCharts();
+    }, 100);
   }
 
 }

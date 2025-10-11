@@ -34,49 +34,24 @@
   }
 }
 
-/* Gridster specific overrides - A4 sheet like container */
-gridster {
-  background: #202124 !important; // Dark background like in the image
-  padding: 20px 20px 150px 20px; // Large bottom padding to show bottom chart
-  width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  min-height: calc(100vh - 100px); // Ensure minimum height
+/* ChatGPT Suggested Styles */
+.dashboard-grid {
+  height: calc(100vh - 100px);
+  background: #1e1e1e;
+  padding: 10px;
+}
 
-  gridster-item {
-    border-radius: 8px;
-    overflow: visible;
-    
-    .gridster-item-content {
-      border-radius: 8px;
-      overflow: visible !important;
-      height: 100% !important;
-      width: 100% !important;
-      min-height: 80px;
-      display: flex !important;
-      flex-direction: column !important;
-      box-sizing: border-box;
-      
-      .widget-content {
-        height: 100% !important;
-        width: 100% !important;
-        flex: 1 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        overflow: visible !important;
-      }
-    }
-    
-    .gridster-item-resizable-handler {
-      background: #1a73e8;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-    }
-    
-    &:hover .gridster-item-resizable-handler {
-      opacity: 0.7;
-    }
-  }
+.chart-box {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  padding: 8px;
 }
 
 .widget-placeholder {
@@ -386,10 +361,18 @@ gridster {
   min-height: 100vh;
 }
 
-/* Let gridster work naturally */
+/* Single scroll - only outer container scrolls */
 :host ::ng-deep gridster {
   height: auto !important;
   min-height: auto !important;
+  overflow: hidden !important; // Hide overflow to contain all items
+  max-width: 100% !important;
+}
+
+/* Force gridster items to stay within container */
+:host ::ng-deep gridster-item {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 :host ::ng-deep gridster-item {

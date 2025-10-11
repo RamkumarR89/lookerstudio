@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { GridDashboardComponent } from '../../components/grid-dashboard/grid-dashboard.component';
+import { GridDashboard2Component } from '../../components/grid-dashboard-2/grid-dashboard-2.component';
 
 @Component({
   selector: 'app-report-builder',
-  imports: [GridDashboardComponent],
+  imports: [GridDashboard2Component],
   templateUrl: './report-builder.html',
   styleUrl: './report-builder.scss'
 })

@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { ReportCanvasComponent } from '../../components/report-canvas/report-canvas.component';
-import { GridDashboardComponent } from '../../components/grid-dashboard/grid-dashboard.component';
+import { GridDashboard2Component } from '../../components/grid-dashboard-2/grid-dashboard-2.component';
 import { ThemePanelComponent } from '../../components/theme-panel/theme-panel.component';
 import { AddDataModalComponent } from '../../components/add-data-modal/add-data-modal.component';
 import { AddChartModalComponent } from '../../components/add-chart-modal/add-chart-modal.component';
@@ -13,7 +13,7 @@ import { PropertiesPanelComponent } from '../../components/properties-panel/prop
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [FormsModule, CommonModule, HeaderComponent, GridDashboardComponent, ThemePanelComponent, AddDataModalComponent, AddChartModalComponent],
+  imports: [FormsModule, CommonModule, HeaderComponent, GridDashboard2Component, ThemePanelComponent, AddDataModalComponent, AddChartModalComponent],
   template: `
     <!-- Clean Looker Studio Layout -->
     <div class="looker-studio">
@@ -29,7 +29,7 @@ import { PropertiesPanelComponent } from '../../components/properties-panel/prop
       <div class="main-layout" [class.sidebar-open]="sidebarOpen" [class.content-visible]="contentVisible">
         <!-- Report Canvas (Left) -->
         <div class="canvas-area" [class.sidebar-open]="sidebarOpen" [class.content-visible]="contentVisible">
-          <app-grid-dashboard></app-grid-dashboard>
+          <app-grid-dashboard-2></app-grid-dashboard-2>
         </div>
 
         <!-- Right Side: Vertical Sidebar -->

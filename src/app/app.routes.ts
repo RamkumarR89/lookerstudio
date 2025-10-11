@@ -40,6 +40,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/data-sources/data-sources').then(c => c.DataSources)
   },
   {
+    path: 'grid-dashboard-2',
+    loadComponent: () => import('./components/grid-dashboard-2/grid-dashboard-2.component').then(c => c.GridDashboard2Component)
+  },
+  {
     path: '**',
     redirectTo: '/dashboard'
   }

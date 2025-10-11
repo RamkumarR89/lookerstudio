@@ -1,0 +1,10 @@
+<gridster [options]="options">
+  <gridster-item [item]="item" *ngFor="let item of dashboard">
+    <div class="widget-container">
+      <div class="drag-handle" title="Drag to move chart">
+        <span class="drag-icon">⋮⋮</span>
+      </div>
+      <widget [chartType]="item.type || 'scatter'" class="no-drag"></widget>
+    </div>
+  </gridster-item>
+</gridster>
