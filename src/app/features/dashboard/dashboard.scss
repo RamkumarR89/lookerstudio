@@ -51,7 +51,7 @@
   /* Ensure canvas takes full width when sidebar is closed */
   width: calc(100% - 16px);
   padding: 0;
-  height: calc(100vh - 184px); /* Match sidebar height exactly */
+  height: calc(100vh - 168px); /* Reduced to match bottom spacing */
   
   /* Adjust canvas when sidebar is open */
   &.sidebar-open {
@@ -69,8 +69,8 @@
 .vertical-sidebar-layout {
   position: fixed;
   right: 16px; /* Increased to match left side padding */
-  top: 136px; /* Match grid canvas top position */
-  height: calc(100vh - 184px); /* Match grid canvas height exactly */
+  top: 120px; /* Further reduced to match bottom spacing exactly */
+  height: calc(100vh - 168px); /* Adjusted to match bottom spacing */
   display: flex;
   flex-direction: row; /* Changed to row for horizontal layout of tabs + content */
   background: #fff;
@@ -639,7 +639,7 @@ html, body {
   .canvas-area {
     margin: 6px; /* Smaller margins on medium screens */
     width: calc(100% - 12px);
-    height: calc(100vh - 180px); /* Match sidebar height on medium screens */
+    height: calc(100vh - 164px); /* Reduced to match bottom spacing */
     
     &.sidebar-open {
       width: calc(100% - 88px); /* Account for increased right padding */
@@ -654,8 +654,8 @@ html, body {
   
   .vertical-sidebar-layout {
     right: 12px; /* Increased right positioning for medium screens */
-    top: 134px; /* Adjust for medium screens */
-    height: calc(100vh - 180px); /* Match canvas height */
+    top: 118px; /* Further reduced to match bottom spacing */
+    height: calc(100vh - 164px); /* Match canvas height */
     width: 60px;
     
     &.content-visible {
@@ -693,7 +693,7 @@ html, body {
     margin: 4px; /* Small margins on mobile */
     border-radius: 6px; /* Smaller radius on mobile */
     width: calc(100% - 8px);
-    height: calc(100vh - 192px); /* Mobile height adjustment */
+    height: calc(100vh - 176px); /* Reduced to match bottom spacing */
     
     &.sidebar-open {
       width: calc(100% - 66px); /* Account for increased right padding on mobile */
@@ -708,8 +708,8 @@ html, body {
   
   .vertical-sidebar-layout {
     right: 8px; /* Increased right positioning for mobile */
-    top: 132px; /* Mobile positioning */
-    height: calc(100vh - 192px); /* Match canvas height on mobile */
+    top: 116px; /* Further reduced to match bottom spacing */
+    height: calc(100vh - 176px); /* Match canvas height on mobile */
     width: 50px;
     
     &.content-visible {
