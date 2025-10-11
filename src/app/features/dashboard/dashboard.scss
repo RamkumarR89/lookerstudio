@@ -15,13 +15,14 @@
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
+  background: #f0f0f0; /* Light background to show frame separation */
   
   /* Adjust layout when sidebar is open */
   &.sidebar-open {
-    margin-right: 80px; /* Space for sidebar tabs */
+    margin-right: 96px; /* Space for sidebar tabs + increased frame margins */
     
     &.content-visible {
-      margin-right: 380px; /* Space for full sidebar with content panel */
+      margin-right: 396px; /* Space for full sidebar with content panel + increased margins */
     }
   }
   
@@ -35,24 +36,31 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  background: #ffffff;
+  background: #f8f9fa;
   z-index: 1;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
   
+  /* Frame styling for grid area */
+  border: 2px solid #e8eaed;
+  border-radius: 8px;
+  margin: 8px;
+  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.3);
+  
   /* Ensure canvas takes full width when sidebar is closed */
-  width: 100%;
-  margin: 0;
+  width: calc(100% - 16px);
   padding: 0;
-  height: calc(100vh - 160px); /* Account for header + toolbar + footer */
+  height: calc(100vh - 184px); /* Match sidebar height exactly */
   
   /* Adjust canvas when sidebar is open */
   &.sidebar-open {
-    width: calc(100% - 80px);
+    width: calc(100% - 104px); /* Account for sidebar + margins + right padding */
+    margin-right: 16px; /* Increased right margin to match left side */
     
     &.content-visible {
-      width: calc(100% - 380px);
+      width: calc(100% - 404px); /* Account for full sidebar + margins + right padding */
+      margin-right: 16px; /* Consistent right margin */
     }
   }
 }
@@ -60,14 +68,18 @@
 /* Vertical Sidebar Layout */
 .vertical-sidebar-layout {
   position: fixed;
-  right: 0;
-  top: 0;
-  height: 100vh;
+  right: 16px; /* Increased to match left side padding */
+  top: 136px; /* Match grid canvas top position */
+  height: calc(100vh - 184px); /* Match grid canvas height exactly */
   display: flex;
   flex-direction: row; /* Changed to row for horizontal layout of tabs + content */
   background: #fff;
-  border-left: 1px solid #e8eaed;
-  box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+  
+  /* Frame styling for sidebar */
+  border: 2px solid #e8eaed;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.3);
+  
   z-index: 50;
   transition: all 0.3s ease;
   width: 80px; /* Default width for tabs only */
@@ -76,17 +88,14 @@
   &.content-visible {
     width: 380px;
   }
-  
-  /* Position from header height */
-  top: 120px; /* Account for header and toolbar */
-  height: calc(100vh - 160px); /* Account for header and footer */
 }
 
 .vertical-tabs-container {
   display: flex;
   flex-direction: column;
   background: #f8f9fa;
-  border-left: 1px solid #e8eaed; /* Changed from border-right to border-left */
+  border-right: 1px solid #e8eaed;
+  border-radius: 6px 0 0 6px; /* Match parent border radius */
   width: 80px;
   min-width: 80px;
   flex-shrink: 0;
@@ -155,6 +164,7 @@
   width: 300px;
   min-width: 300px;
   background: #fff;
+  border-radius: 0 6px 6px 0; /* Match parent border radius */
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
@@ -286,9 +296,10 @@
   height: 100%;
   
   .panel-header {
-    padding: 16px 20px;
+    padding: 12px 20px; /* Reduced top/bottom padding to match bottom spacing */
     border-bottom: 1px solid #e8eaed;
     background: #fff;
+    flex-shrink: 0; /* Prevent header from shrinking */
     
     .header-content {
       display: flex;
@@ -311,13 +322,14 @@
   .panel-content {
     flex: 1;
     overflow-y: auto;
+    padding: 0; /* Remove default padding */
     
     .empty-message {
       color: #5f6368;
       font-size: 14px;
       text-align: center;
       margin: 0;
-      padding: 40px 20px;
+      padding: 32px 20px; /* Reduced padding to match header spacing */
     }
   }
 }
@@ -336,8 +348,9 @@
   }
   
   .search-container {
-    padding: 16px 20px;
+    padding: 12px 20px; /* Match header padding */
     border-bottom: 1px solid #e8eaed;
+    flex-shrink: 0; /* Prevent search container from shrinking */
     
     .search-input {
       width: 100%;
@@ -457,7 +470,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 32px 20px; /* Reduced padding to match header */
 }
 
 /* Custom Scrollbar Styling */
@@ -534,16 +547,16 @@ h2 {
   }
 }
 
-/* Ensure no white space when sidebar is closed */
+/* Ensure consistent padding when sidebar is closed */
 .main-layout:not(.sidebar-open) {
   .vertical-sidebar-layout {
     display: none !important;
   }
   
   .canvas-area {
-    margin-right: 0 !important;
+    margin-right: 8px !important; /* Add right margin to match left side */
     padding-right: 0 !important;
-    width: 100% !important;
+    width: calc(100% - 16px) !important; /* Account for both left and right margins */
   }
 }
 
@@ -615,29 +628,34 @@ html, body {
 @media (max-width: 1200px) {
   .main-layout {
     &.sidebar-open {
-      margin-right: 60px; /* Smaller sidebar on medium screens */
+      margin-right: 76px; /* Smaller sidebar on medium screens + increased margins */
       
       &.content-visible {
-        margin-right: 320px; /* Smaller content panel */
+        margin-right: 336px; /* Smaller content panel + increased margins */
       }
     }
   }
   
   .canvas-area {
-    margin: 0; /* Remove excessive margins */
-    min-height: calc(100vh - 160px);
-    max-height: calc(100vh - 160px);
+    margin: 6px; /* Smaller margins on medium screens */
+    width: calc(100% - 12px);
+    height: calc(100vh - 180px); /* Match sidebar height on medium screens */
     
     &.sidebar-open {
-      width: calc(100% - 60px);
+      width: calc(100% - 88px); /* Account for increased right padding */
+      margin-right: 12px; /* Increased right margin for medium screens */
       
       &.content-visible {
-        width: calc(100% - 320px);
+        width: calc(100% - 348px); /* Account for increased padding */
+        margin-right: 12px;
       }
     }
   }
   
   .vertical-sidebar-layout {
+    right: 12px; /* Increased right positioning for medium screens */
+    top: 134px; /* Adjust for medium screens */
+    height: calc(100vh - 180px); /* Match canvas height */
     width: 60px;
     
     &.content-visible {
@@ -672,21 +690,26 @@ html, body {
   }
   
   .canvas-area {
-    margin: 0; /* Remove margins on mobile */
-    border-radius: 0;
-    min-height: calc(100vh - 200px);
-    max-height: calc(100vh - 200px);
+    margin: 4px; /* Small margins on mobile */
+    border-radius: 6px; /* Smaller radius on mobile */
+    width: calc(100% - 8px);
+    height: calc(100vh - 192px); /* Mobile height adjustment */
     
     &.sidebar-open {
-      width: calc(100% - 50px);
+      width: calc(100% - 66px); /* Account for increased right padding on mobile */
+      margin-right: 8px; /* Increased right margin for mobile */
       
       &.content-visible {
-        width: calc(100% - 280px);
+        width: calc(100% - 296px); /* Account for increased padding */
+        margin-right: 8px;
       }
     }
   }
   
   .vertical-sidebar-layout {
+    right: 8px; /* Increased right positioning for mobile */
+    top: 132px; /* Mobile positioning */
+    height: calc(100vh - 192px); /* Match canvas height on mobile */
     width: 50px;
     
     &.content-visible {
