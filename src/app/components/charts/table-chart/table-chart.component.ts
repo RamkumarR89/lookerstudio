@@ -35,37 +35,41 @@ import { CommonModule } from '@angular/common';
       width: 100%;
       display: flex;
       flex-direction: column;
-      padding: 16px;
+      padding: 8px;
       background: #fff;
       box-sizing: border-box;
       overflow: hidden;
+      border: none;
+      border-radius: 0;
     }
     .chart-title {
-      margin: 0 0 12px 0;
-      font-size: 14px;
+      margin: 0 0 4px 0;
+      font-size: 11px;
       font-weight: 500;
-      color: #202124;
+      color: #1a73e8;
       text-align: left;
       font-family: 'Google Sans', Roboto, sans-serif;
       border-bottom: 1px solid #f1f3f4;
-      padding-bottom: 8px;
+      padding-bottom: 4px;
       flex-shrink: 0;
     }
     .table-wrapper {
       flex: 1;
-      overflow: auto;
-      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
       width: 100%;
+      height: calc(100% - 25px);
     }
     .data-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 13px;
+      font-size: 11px;
       font-family: 'Google Sans', Roboto, sans-serif;
+      margin: 0;
     }
     .data-table th,
     .data-table td {
-      padding: 12px 16px;
+      padding: 4px 8px;
       text-align: left;
       border-bottom: 1px solid #e8eaed;
     }
@@ -73,12 +77,16 @@ import { CommonModule } from '@angular/common';
       background-color: #f8f9fa;
       font-weight: 500;
       color: #5f6368;
-      font-size: 12px;
+      font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
     }
     .data-table td {
       color: #202124;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100px;
     }
     .data-table tbody tr:hover {
       background-color: #f8f9fa;

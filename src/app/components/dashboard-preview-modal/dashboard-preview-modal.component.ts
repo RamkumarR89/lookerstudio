@@ -89,16 +89,25 @@ export interface DashboardPreviewData {
                 [item]="chart"
                 class="preview-grid-item">
                 <div class="chart-container">
-                  <div class="chart-header">
-                    <h3 class="chart-title">{{ chart.title }}</h3>
-                  </div>
                   <div class="chart-content">
-                    <app-scatter-chart *ngIf="chart.type === 'scatter'" [data]="[]"></app-scatter-chart>
-                    <app-pie-chart *ngIf="chart.type === 'pie'" [data]="[]"></app-pie-chart>
-                    <app-line-chart *ngIf="chart.type === 'line'" [data]="[]"></app-line-chart>
-                    <app-bar-chart *ngIf="chart.type === 'bar'" [data]="[]"></app-bar-chart>
-                    <app-table-chart *ngIf="chart.type === 'table'" [data]="sampleTableData" [title]="chart.title"></app-table-chart>
-                    <app-scorecard-chart *ngIf="chart.type === 'scorecard'" [data]="[]"></app-scorecard-chart>
+                    <app-scatter-chart *ngIf="chart.type === 'scatter'" 
+                                     [data]="sampleScatterData" 
+                                     [title]="chart.title"></app-scatter-chart>
+                    <app-pie-chart *ngIf="chart.type === 'pie'" 
+                                 [data]="samplePieData" 
+                                 [title]="chart.title"></app-pie-chart>
+                    <app-line-chart *ngIf="chart.type === 'line'" 
+                                  [data]="sampleLineData" 
+                                  [title]="chart.title"></app-line-chart>
+                    <app-bar-chart *ngIf="chart.type === 'bar'" 
+                                 [data]="sampleBarData" 
+                                 [title]="chart.title"></app-bar-chart>
+                    <app-table-chart *ngIf="chart.type === 'table'" 
+                                   [data]="sampleTableData" 
+                                   [title]="chart.title"></app-table-chart>
+                    <app-scorecard-chart *ngIf="chart.type === 'scorecard'" 
+                                       [data]="sampleScorecardData" 
+                                       [title]="chart.title"></app-scorecard-chart>
                   </div>
                 </div>
               </gridster-item>
@@ -137,6 +146,7 @@ export class DashboardPreviewModalComponent implements OnInit {
 
   @ViewChild('previewContent', { static: false }) previewContent!: ElementRef;
 
+  // Sample data for different chart types
   sampleTableData = [
     { label: 'Princess Cruise Line', value: 17 },
     { label: 'Holland America', value: 11 },
@@ -146,24 +156,93 @@ export class DashboardPreviewModalComponent implements OnInit {
     { label: 'P&O Cruises', value: 4 }
   ];
 
+  samplePieData = [
+    { label: 'Princess Cruise Line', value: 17 },
+    { label: 'Holland America', value: 11 },
+    { label: 'Carnival Cruise', value: 8 },
+    { label: 'AIDA Cruises', value: 7 },
+    { label: 'Costa Crociere', value: 7 },
+    { label: 'P&O Cruises', value: 4 }
+  ];
+
+  sampleScatterData = [
+    { x: 5000, y: 500 },
+    { x: 10000, y: 800 },
+    { x: 15000, y: 1200 },
+    { x: 20000, y: 1500 },
+    { x: 25000, y: 1800 },
+    { x: 30000, y: 2000 }
+  ];
+
+  sampleLineData = [
+    { label: 'Jan', value: 12 },
+    { label: 'Feb', value: 19 },
+    { label: 'Mar', value: 8 },
+    { label: 'Apr', value: 15 },
+    { label: 'May', value: 25 },
+    { label: 'Jun', value: 18 }
+  ];
+
+  sampleBarData = [
+    { label: 'Q1', value: 10 },
+    { label: 'Q2', value: 15 },
+    { label: 'Q3', value: 8 },
+    { label: 'Q4', value: 20 }
+  ];
+
+  sampleScorecardData = [
+    { label: 'Total Revenue', value: '1.2M', change: '+12.5%', trend: 'up' }
+  ];
+
   gridsterOptions: GridsterConfig = {
-    gridType: 'fit',
+    gridType: 'fixed',
+    compactType: 'none',
+    margin: 10,
+    outerMargin: true,
+    outerMarginTop: 10,
+    outerMarginRight: 10,
+    outerMarginBottom: 10,
+    outerMarginLeft: 10,
+    useTransformPositioning: true,
+    mobileBreakpoint: 200,
+    minCols: 3,
+    maxCols: 3,
+    minRows: 3,
+    maxRows: 3,
+    maxItemCols: 3,
+    minItemCols: 1,
+    maxItemRows: 2,
+    minItemRows: 1,
+    maxItemArea: 6,
+    minItemArea: 1,
+    defaultItemCols: 1,
+    defaultItemRows: 1,
+    fixedColWidth: 300,
+    fixedRowHeight: 200,
+    keepFixedHeightInMobile: false,
+    keepFixedWidthInMobile: false,
     displayGrid: 'none',
-    pushItems: false,
     draggable: { enabled: false },
     resizable: { enabled: false },
-    margin: 10,
-    minCols: 12,
-    maxCols: 12,
-    minRows: 8,
-    maxRows: 100,
-    defaultItemCols: 3,
-    defaultItemRows: 3
+    swap: false,
+    pushItems: false,
+    disablePushOnDrag: true,
+    disablePushOnResize: true
   };
 
 
 
   ngOnInit() {
+    if (this.dashboardData?.charts) {
+      console.log('Charts positions:', this.dashboardData.charts.map(c => ({
+        title: c.title,
+        type: c.type,
+        x: c.x,
+        y: c.y,
+        cols: c.cols,
+        rows: c.rows
+      })));
+    }
   }
 
   getCurrentTimestamp(): string {
