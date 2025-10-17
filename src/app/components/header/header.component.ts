@@ -9,110 +9,107 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <!-- Exact Looker Studio Header -->
+    <!-- Unified Looker Studio Header -->
     <header class="looker-header">
       <div class="header-content">
-        <!-- Left: Logo and Title -->
+        <!-- Left: Logo, Title & Menu -->
         <div class="header-left">
           <div class="logo">📊</div>
           <span class="report-title">Untitled Report</span>
+          
+          <span class="separator"></span>
+          
+          <!-- Menu Items First -->
+          <nav class="header-nav">
+            <span class="nav-item" title="File operations">File</span>
+            <span class="nav-item" title="Edit dashboard">Edit</span>
+            <span class="nav-item" title="View options">View</span>
+            <span class="nav-item" title="Page settings">Page</span>
+          </nav>
+          
+          <span class="separator"></span>
+          
+          <!-- History Controls -->
+          <button class="header-btn icon-btn" 
+                  (click)="onUndo()" 
+                  [disabled]="!canUndo"
+                  [title]="canUndo ? 'Undo last action' : 'Nothing to undo'">↶</button>
+          <button class="header-btn icon-btn" 
+                  (click)="onRedo()" 
+                  [disabled]="!canRedo"
+                  [title]="canRedo ? 'Redo last action' : 'Nothing to redo'">↷</button>
+          
+          <!-- Zoom Controls -->
+          <div class="zoom-controls">
+            <button class="header-btn icon-btn" 
+                    (click)="onZoomOut()" 
+                    [disabled]="currentZoom <= minZoom"
+                    [title]="'Zoom out (' + currentZoom + '%)'">🔍-</button>
+            <span class="zoom-display">{{ currentZoom }}%</span>
+            <button class="header-btn icon-btn" 
+                    (click)="onZoomIn()" 
+                    [disabled]="currentZoom >= maxZoom"
+                    [title]="'Zoom in (' + currentZoom + '%)'">🔍+</button>
+            <button class="header-btn icon-btn" 
+                    (click)="onZoomReset()" 
+                    [disabled]="currentZoom === 100"
+                    title="Reset zoom to 100%">🔍</button>
+            <button class="header-btn icon-btn" 
+                    (click)="onPanReset()" 
+                    [disabled]="currentZoom <= 100"
+                    title="Center view">🎯</button>
+          </div>
+          
+          <span class="separator"></span>
+          
+          <!-- Primary Actions -->
+          <button class="header-btn primary-btn" (click)="onAddData()" title="Add data source">
+            📊
+          </button>
+          
+          <button class="header-btn dropdown-btn" (click)="onAddChart()" title="Add chart to dashboard">
+            📈
+          </button>
+          
+          <button class="header-btn dropdown-btn" title="Add control element">
+            🎛️
+          </button>
         </div>
-        
-        <!-- Center: Menu Items -->
-        <nav class="header-nav">
-          <span class="nav-item">File</span>
-          <span class="nav-item">Edit</span>
-          <span class="nav-item">View</span>
-          <span class="nav-item">Page</span>
-        </nav>
         
         <!-- Right: Action Buttons -->
         <div class="header-right">
-          <button class="header-btn reset-btn" 
+          <!-- Action Buttons -->
+          <button class="header-btn icon-only reset-btn" 
                   (click)="onReset()" 
                   [disabled]="!canReset"
                   [title]="canReset ? 'Reset to original state' : 'No changes to reset'">
-            <span class="icon">↺</span>
-            Reset
+            ↺
           </button>
           
-          <button class="header-btn save-btn" 
+          <button class="header-btn icon-only save-btn" 
                   (click)="onSave()" 
                   [disabled]="!hasChanges"
                   [class.primary]="hasChanges"
                   [title]="hasChanges ? 'Save changes' : 'No changes to save'">
-            <span class="icon">💾</span>
-            Save
+            💾
           </button>
           
-          <button class="header-btn primary view-btn" (click)="onView()">
-            <span class="icon">👁️</span>
-            View
+          <button class="header-btn icon-only primary view-btn" (click)="onView()" title="View dashboard">
+            👁️
           </button>
           
-          <button class="header-btn icon-only">⋮</button>
+          <button class="header-btn icon-only" (click)="onThemePanel()" title="Theme and layout">
+            🎨
+          </button>
+          
+          <button class="header-btn icon-only" title="More options">
+            ⋮
+          </button>
+          
           <div class="user-avatar">R</div>
         </div>
       </div>
     </header>
-    
-    <!-- Main Toolbar -->
-    <div class="main-toolbar">
-      <div class="toolbar-left">
-        <button class="toolbar-btn icon-btn" 
-                (click)="onUndo()" 
-                [disabled]="!canUndo"
-                [title]="canUndo ? 'Undo last action' : 'Nothing to undo'">↶</button>
-        <button class="toolbar-btn icon-btn" 
-                (click)="onRedo()" 
-                [disabled]="!canRedo"
-                [title]="canRedo ? 'Redo last action' : 'Nothing to redo'">↷</button>
-        
-        <div class="zoom-controls">
-          <button class="toolbar-btn icon-btn" 
-                  (click)="onZoomOut()" 
-                  [disabled]="currentZoom <= minZoom"
-                  [title]="'Zoom out (' + currentZoom + '%)'">🔍-</button>
-          <span class="zoom-display">{{ currentZoom }}%</span>
-          <button class="toolbar-btn icon-btn" 
-                  (click)="onZoomIn()" 
-                  [disabled]="currentZoom >= maxZoom"
-                  [title]="'Zoom in (' + currentZoom + '%)'">🔍+</button>
-          <button class="toolbar-btn icon-btn" 
-                  (click)="onZoomReset()" 
-                  [disabled]="currentZoom === 100"
-                  title="Reset zoom to 100%">🔍</button>
-          <button class="toolbar-btn icon-btn" 
-                  (click)="onPanReset()" 
-                  [disabled]="currentZoom <= 100"
-                  title="Center view">🎯</button>
-        </div>
-        <span class="separator"></span>
-        
-        <button class="toolbar-btn primary-btn" (click)="onAddData()">
-          📊 Add data
-        </button>
-        
-        <button class="toolbar-btn dropdown-btn" (click)="onAddChart()">
-          📈 Add a chart ▼
-        </button>
-        
-        <button class="toolbar-btn dropdown-btn">
-          🎛️ Add a control ▼
-        </button>
-        
-        <span class="separator"></span>
-        
-        <button class="toolbar-btn icon-btn">&lt;/&gt;</button>
-        
-        <span class="separator"></span>
-        
-      </div>
-      
-      <div class="toolbar-right">
-        <span class="theme-text" (click)="onThemePanel()">Theme and layout</span>
-      </div>
-    </div>
   `,
   styleUrl: './header.component.scss'
 })
