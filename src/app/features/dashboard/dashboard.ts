@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
@@ -10,6 +10,7 @@ import { ThemePanelComponent } from '../../components/theme-panel/theme-panel.co
 import { AddDataModalComponent } from '../../components/add-data-modal/add-data-modal.component';
 import { AddChartModalComponent } from '../../components/add-chart-modal/add-chart-modal.component';
 import { PropertiesPanelComponent } from '../../components/properties-panel/properties-panel.component';
+import { DashboardHistoryService, DashboardState } from '../../core/services/dashboard-history.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,14 +25,38 @@ import { PropertiesPanelComponent } from '../../components/properties-panel/prop
         (addDataClicked)="openAddDataModal()"
         (addChartClicked)="openAddChartModal()"
         (themePanelClicked)="openThemePanel()"
-        (viewClicked)="openPreviewModal()">
+        (viewClicked)="openPreviewModal()"
+        (undoClicked)="onUndo($event)"
+        (redoClicked)="onRedo($event)"
+        (resetClicked)="onReset($event)"
+        (saveClicked)="onSave()"
+        (zoomChanged)="onZoomChanged($event)"
+        (panReset)="onPanReset()">
       </app-header>
 
       <!-- Main Content Layout -->
       <div class="main-layout" [class.sidebar-open]="sidebarOpen" [class.content-visible]="contentVisible">
         <!-- Report Canvas (Left) -->
         <div class="canvas-area" [class.sidebar-open]="sidebarOpen" [class.content-visible]="contentVisible">
-          <app-grid-dashboard-2 #gridDashboard></app-grid-dashboard-2>
+          <div class="pan-container" 
+               [class.panning]="isPanning"
+               [class.pannable]="currentZoom > 100"
+               (mousedown)="onPanStart($event)"
+               (mousemove)="onPanMove($event)"
+               (mouseup)="onPanEnd()"
+               (mouseleave)="onPanEnd()"
+               (wheel)="onWheel($event)">
+            <!-- Pan instructions overlay (shown when zoomed) -->
+            <div class="pan-instructions" *ngIf="currentZoom > 100 && !isPanning">
+              <span class="instruction-text">🖱️ Drag to pan • ⌨️ Arrow keys • 🎯 Center</span>
+            </div>
+            
+            <div class="zoom-container" 
+                 [style.transform]="'scale(' + currentZoom / 100 + ') translate(' + panX + 'px, ' + panY + 'px)'">
+              <app-grid-dashboard-2 #gridDashboard 
+                                   (dashboardChanged)="onDashboardChanged($event)"></app-grid-dashboard-2>
+            </div>
+          </div>
         </div>
 
         <!-- Right Side: Vertical Sidebar -->
@@ -219,6 +244,8 @@ import { PropertiesPanelComponent } from '../../components/properties-panel/prop
 export class Dashboard implements OnInit {
   @ViewChild('gridDashboard') gridDashboard!: GridDashboard2Component;
   
+  constructor(private historyService: DashboardHistoryService) {}
+  
   showAddDataModal = false;
   showAddChartModal = false;
   showThemePanel = false;
@@ -230,6 +257,14 @@ export class Dashboard implements OnInit {
   activeSidebarTab: 'data' | 'properties' | 'filter' = 'data';
   sidebarOpen = false; // Initially hidden completely
   contentVisible = false; // Content panel visibility
+  currentZoom = 100; // Zoom level percentage
+  
+  // Pan functionality
+  isPanning = false;
+  panX = 0;
+  panY = 0;
+  startX = 0;
+  startY = 0;
 
   previewData: DashboardPreviewData = {
     title: 'Dashboard Report',
@@ -271,7 +306,8 @@ export class Dashboard implements OnInit {
   }
 
   ngOnInit() {
-    // Initialize the component
+    // Initialize the history service with empty dashboard
+    this.historyService.initializeState([], 'Initial empty dashboard');
   }
 
   openAddDataModal() {
@@ -372,5 +408,145 @@ export class Dashboard implements OnInit {
 
   closePreviewModal() {
     this.showPreviewModal = false;
+  }
+
+  // History Management Methods
+  onUndo(previousState: DashboardState) {
+    if (this.gridDashboard && previousState.dashboardData) {
+      // Restore the dashboard to the previous state
+      this.gridDashboard.dashboard = [...previousState.dashboardData];
+      console.log('Undo: Restored to state:', previousState.description);
+    }
+  }
+
+  onRedo(nextState: DashboardState) {
+    if (this.gridDashboard && nextState.dashboardData) {
+      // Restore the dashboard to the next state
+      this.gridDashboard.dashboard = [...nextState.dashboardData];
+      console.log('Redo: Restored to state:', nextState.description);
+    }
+  }
+
+  onReset(originalState: DashboardState) {
+    if (this.gridDashboard && originalState.dashboardData) {
+      // Reset the dashboard to the original state
+      this.gridDashboard.dashboard = [...originalState.dashboardData];
+      console.log('Reset: Restored to original state');
+    }
+  }
+
+  onSave() {
+    console.log('Dashboard saved successfully!');
+    // Here you could add actual save logic (API call, localStorage, etc.)
+    // For now, we just confirm the save
+  }
+
+  // Method to save current state to history (call this when charts are added/removed/modified)
+  saveCurrentStateToHistory(description: string) {
+    if (this.gridDashboard && this.gridDashboard.dashboard) {
+      this.historyService.saveState(this.gridDashboard.dashboard, description);
+    }
+  }
+
+  // Handle dashboard changes from grid component
+  onDashboardChanged(event: {dashboard: any[], description: string}) {
+    this.historyService.saveState(event.dashboard, event.description);
+    console.log('Dashboard state saved:', event.description);
+  }
+
+  // Handle zoom changes
+  onZoomChanged(zoomLevel: number) {
+    this.currentZoom = zoomLevel;
+    
+    // Reset pan when zooming back to 100%
+    if (zoomLevel <= 100) {
+      this.panX = 0;
+      this.panY = 0;
+    }
+    
+    console.log('Zoom changed to:', zoomLevel + '%');
+  }
+
+  // Pan functionality
+  onPanStart(event: MouseEvent) {
+    if (this.currentZoom <= 100) return;
+    
+    this.isPanning = true;
+    this.startX = event.clientX - this.panX;
+    this.startY = event.clientY - this.panY;
+    event.preventDefault();
+  }
+
+  onPanMove(event: MouseEvent) {
+    if (!this.isPanning || this.currentZoom <= 100) return;
+    
+    this.panX = event.clientX - this.startX;
+    this.panY = event.clientY - this.startY;
+    event.preventDefault();
+  }
+
+  onPanEnd() {
+    this.isPanning = false;
+  }
+
+  // Keyboard navigation for panning
+  @HostListener('document:keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent) {
+    if (this.currentZoom <= 100) return;
+    
+    const panStep = 20;
+    let handled = false;
+    
+    switch (event.key) {
+      case 'ArrowUp':
+        this.panY += panStep;
+        handled = true;
+        break;
+      case 'ArrowDown':
+        this.panY -= panStep;
+        handled = true;
+        break;
+      case 'ArrowLeft':
+        this.panX += panStep;
+        handled = true;
+        break;
+      case 'ArrowRight':
+        this.panX -= panStep;
+        handled = true;
+        break;
+      case 'Home':
+        // Reset pan to center
+        this.panX = 0;
+        this.panY = 0;
+        handled = true;
+        break;
+    }
+    
+    if (handled) {
+      event.preventDefault();
+    }
+  }
+
+  // Reset pan to center
+  onPanReset() {
+    this.panX = 0;
+    this.panY = 0;
+  }
+
+  // Wheel/scroll panning (with Shift key for horizontal scroll)
+  onWheel(event: WheelEvent) {
+    if (this.currentZoom <= 100) return;
+    
+    event.preventDefault();
+    
+    const panSpeed = 2;
+    
+    if (event.shiftKey) {
+      // Horizontal panning when Shift is held
+      this.panX -= event.deltaY * panSpeed;
+    } else {
+      // Vertical panning (default)
+      this.panY -= event.deltaY * panSpeed;
+    }
   }
 }

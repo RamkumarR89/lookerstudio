@@ -1,7 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  EventEmitter,
   OnInit,
+  Output,
   ViewEncapsulation
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -23,6 +25,8 @@ import {
   styleUrls: ['./grid-dashboard-2.component.scss']
 })
 export class GridDashboard2Component implements OnInit {
+  @Output() dashboardChanged = new EventEmitter<{dashboard: Array<GridsterItem & { type?: string }>, description: string}>();
+  
   options!: GridsterConfig;
   dashboard!: Array<GridsterItem & { type?: string }>;
   showChartModal = false;
@@ -127,6 +131,12 @@ export class GridDashboard2Component implements OnInit {
       
       this.dashboard.push(newChart);
       console.log('Added chart:', newChart);
+      
+      // Emit dashboard change for history tracking
+      this.dashboardChanged.emit({
+        dashboard: [...this.dashboard],
+        description: `Added ${chartType} chart`
+      });
     } else {
       console.log('Grid is full - maximum 9 charts allowed');
       // Could show a notification here
