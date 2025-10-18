@@ -51,7 +51,7 @@
   /* Ensure canvas takes full width when sidebar is closed */
   width: calc(100% - 16px);
   padding: 0;
-  height: calc(100vh - 168px); /* Reduced to match bottom spacing */
+  height: calc(100vh - 120px); /* Reduced bottom spacing to minimize unused area */
   
   /* Adjust canvas when sidebar is open */
   &.sidebar-open {

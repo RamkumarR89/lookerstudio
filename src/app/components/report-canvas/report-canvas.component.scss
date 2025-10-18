@@ -6,8 +6,8 @@
   flex-direction: column;
   position: relative;
   height: 100%;
-  min-height: calc(100vh - 80px); /* Adjusted for header and bottom spacing */
-  max-height: calc(100vh - 80px); /* Prevent overflow */
+  min-height: calc(100vh - 100px); /* Reduced to minimize unused space at bottom */
+  max-height: calc(100vh - 100px); /* Prevent overflow while using more space */
   overflow: hidden;
   padding-bottom: 8px; /* Small bottom padding for visual breathing room */
   box-sizing: border-box;
@@ -47,8 +47,8 @@
   box-shadow: 0 1px 3px rgba(60,64,67,0.1);
   border: 1px solid #e8eaed;
   position: relative !important;
-  min-height: calc(100vh - 180px);
-  max-height: calc(100vh - 180px);
+  min-height: calc(100vh - 140px); /* Reduced to use more available space */
+  max-height: calc(100vh - 140px); /* Reduced to use more available space */
   overflow: hidden !important; /* Contain draggable elements within boundary */
   
   /* Ensure proper positioning context for draggable elements */
