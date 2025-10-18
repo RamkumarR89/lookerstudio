@@ -1,15 +1,17 @@
-/* Dashboard Preview Modal Styles */
+/* Dashboard Preview Modal Styles - Print Layout */
 .preview-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8);
+  background: #f5f5f5;
   z-index: 10000;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  padding: 20px 0;
+  overflow-y: auto;
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
@@ -22,135 +24,171 @@
 
 .preview-modal {
   background: white;
-  width: 95vw;
-  height: 90vh;
-  max-width: 1400px;
-  max-height: 900px;
-  border-radius: 8px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  width: 210mm; /* A4 width */
+  min-height: 297mm; /* A4 height */
+  max-width: 90vw;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  transform: scale(0.9);
+  position: relative;
+  margin: 0 auto;
+  transform: scale(0.95);
   transition: transform 0.3s ease;
 
   .visible & {
     transform: scale(1);
   }
-}
 
-/* Modal Header */
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 24px;
-  border-bottom: 1px solid #e0e0e0;
-  background: #f8f9fa;
-  min-height: 60px;
-
-  .header-left {
+  /* Print-style page layout */
+  .print-page {
+    padding: 20mm;
+    background: white;
+    min-height: calc(297mm - 40mm); /* A4 minus padding */
     display: flex;
     flex-direction: column;
-    gap: 4px;
-
-    .modal-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #202124;
-      margin: 0;
-    }
-
-    .report-info {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: #5f6368;
-
-      .chart-count {
-        color: #1a73e8;
-        font-weight: 500;
-      }
-
-      .separator {
-        color: #dadce0;
-      }
-    }
   }
+}
 
-  .header-right {
+/* Floating Action Bar */
+.floating-action-bar {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  display: flex;
+  gap: 12px;
+  z-index: 10001;
+  
+  .action-btn {
     display: flex;
     align-items: center;
     gap: 8px;
+    padding: 12px 16px;
+    background: white;
+    border: 1px solid #dadce0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
 
-    .maximize-btn,
-    .close-btn {
-      width: 32px;
-      height: 32px;
-      border: none;
-      background: transparent;
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #5f6368;
-      transition: all 0.2s ease;
+    .icon {
+      font-size: 16px;
+    }
 
-      .icon {
-        font-size: 16px;
-      }
+    &:hover {
+      background: #f8f9fa;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
 
+    &.pdf-btn {
+      color: #d93025;
+      border-color: #f28b82;
+      
       &:hover {
-        background: #f1f3f4;
-        color: #202124;
+        background: #fce8e6;
       }
     }
 
-    .close-btn:hover {
-      background: #fce8e6;
-      color: #d93025;
+    &.png-btn {
+      color: #1a73e8;
+      border-color: #aecbfa;
+      
+      &:hover {
+        background: #e8f0fe;
+      }
+    }
+
+    &.close-btn {
+      color: #5f6368;
+      
+      &:hover {
+        background: #f1f3f4;
+      }
     }
   }
 }
 
-/* Preview Content */
-.preview-content {
-  flex: 1;
-  padding: 32px;
-  overflow-y: auto;
-  background: #ffffff;
-
+/* Print-style Content Layout */
+.print-page {
   .report-header {
-    text-align: center;
-    margin-bottom: 40px;
-    padding-bottom: 24px;
-    border-bottom: 2px solid #f0f0f0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border: 1px solid #e8eaed;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 32px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
-    .report-title {
-      font-size: 32px;
-      font-weight: 400;
-      color: #202124;
-      margin: 0 0 8px 0;
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+
+      .company-info {
+        .company-name {
+          font-size: 24px;
+          font-weight: 600;
+          color: #1a73e8;
+          margin: 0 0 4px 0;
+        }
+
+        .company-tagline {
+          font-size: 14px;
+          color: #5f6368;
+          margin: 0;
+          font-style: italic;
+        }
+      }
+
+      .report-metadata {
+        text-align: right;
+
+        .report-id {
+          font-size: 12px;
+          color: #5f6368;
+          margin: 0 0 4px 0;
+          font-family: monospace;
+        }
+
+        .generation-time {
+          font-size: 12px;
+          color: #80868b;
+          margin: 0;
+        }
+      }
     }
 
-    .report-timestamp {
-      font-size: 14px;
-      color: #5f6368;
-      font-style: italic;
-      margin: 0;
+    .header-center {
+      text-align: center;
+      margin-bottom: 0;
+
+      .report-title {
+        font-size: 28px;
+        font-weight: 500;
+        color: #202124;
+        margin: 0 0 8px 0;
+      }
+
+      .report-description {
+        font-size: 14px;
+        color: #5f6368;
+        margin: 0;
+        line-height: 1.4;
+      }
     }
   }
 
   .dashboard-container {
-    min-height: 600px;
+    flex: 1;
+    margin: 20px 0;
 
     .empty-dashboard {
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 500px;
+      height: 400px;
       background: #fafafa;
       border-radius: 8px;
       border: 2px dashed #dadce0;
@@ -173,68 +211,94 @@
         }
       }
     }
-  }
 
-  .preview-gridster {
-    width: 940px;
-    height: 620px;
-    background: white;
-    border-radius: 8px;
-    padding: 10px;
-    border: 1px solid #e0e0e0;
-    margin: 0 auto;
-    position: relative;
-    overflow: hidden;
-
-    .preview-grid-item {
+    .preview-gridster {
+      width: 100%;
+      height: auto !important;
+      min-height: auto !important;
       background: white;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      border: 1px solid #e8eaed;
-      overflow: hidden;
-      transition: all 0.3s ease;
-      
-      &:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      }
+      padding: 10px;
+      border: 1px solid #e0e0e0;
+      position: relative;
+      overflow: visible !important;
 
-      .chart-container {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
+      .preview-grid-item {
         background: white;
         border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e8eaed;
         overflow: hidden;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
 
-        .chart-content {
+        .chart-container {
           width: 100%;
           height: 100%;
-          padding: 0;
-          display: block;
+          display: flex;
+          flex-direction: column;
           background: white;
+          border-radius: 8px;
           overflow: hidden;
-          position: relative;
 
-          // Ensure chart components take full space
-          > * {
+          .chart-content {
             width: 100%;
             height: 100%;
+            padding: 0;
             display: block;
-          }
+            background: white;
+            overflow: hidden;
+            position: relative;
 
-          // Special styling for different chart types
-          app-table-chart {
-            height: 100%;
-            display: block;
-          }
+            // Ensure chart components take full space
+            > * {
+              width: 100%;
+              height: 100%;
+              display: block;
+            }
 
-          app-scorecard-chart {
-            height: 100%;
-            display: block;
+            // Special styling for different chart types
+            app-table-chart {
+              height: 100%;
+              display: block;
+            }
+
+            app-scorecard-chart {
+              height: 100%;
+              display: block;
+            }
           }
         }
       }
+    }
+  }
+}
+
+/* Simple Report Footer */
+.report-footer {
+  margin-top: 40px;
+  padding: 20px 0;
+  border-top: 1px solid #e8eaed;
+
+  .footer-bottom {
+    text-align: center;
+
+    .copyright {
+      font-size: 12px;
+      color: #5f6368;
+      margin: 0 0 8px 0;
+      font-weight: 400;
+    }
+
+    .disclaimer {
+      font-size: 11px;
+      color: #80868b;
+      margin: 0;
+      font-style: italic;
+      line-height: 1.4;
     }
   }
 }
@@ -318,52 +382,223 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .preview-modal {
-    width: 98vw;
-    height: 95vh;
-    margin: 1vh 1vw;
+    width: 95vw;
+    min-height: auto;
+    margin: 10px;
+    transform: scale(0.9);
   }
 
-  .preview-content {
-    padding: 16px;
-
-    .report-header .report-title {
-      font-size: 24px;
+  .floating-action-bar {
+    top: 20px;
+    right: 20px;
+    flex-direction: column;
+    
+    .action-btn {
+      width: 100%;
+      justify-content: center;
     }
   }
 
-  .modal-footer .footer-right {
-    flex-direction: column;
-    gap: 8px;
-    align-items: stretch;
+  .print-page {
+    padding: 15mm;
 
-    .export-btn,
-    .close-preview-btn {
-      justify-content: center;
+    .report-header {
+      padding: 16px;
+
+      .header-top {
+        flex-direction: column;
+        gap: 16px;
+        align-items: center;
+        text-align: center;
+
+        .company-info .company-name {
+          font-size: 20px;
+        }
+
+        .report-metadata {
+          text-align: center;
+        }
+      }
+
+      .header-center .report-title {
+        font-size: 22px;
+      }
+    }
+
+    .dashboard-container .preview-gridster {
+      height: 400px;
+    }
+
+    .report-footer {
+      margin-top: 30px;
+      padding: 15px 0;
+      
+      .footer-bottom {
+        .copyright {
+          font-size: 11px;
+        }
+
+        .disclaimer {
+          font-size: 10px;
+        }
+      }
     }
   }
 }
 
 /* Print styles for PDF generation */
 @media print {
-  .preview-modal-overlay,
-  .modal-header,
-  .modal-footer {
+  .preview-modal-overlay {
+    background: white !important;
+    position: static !important;
+    padding: 0 !important;
+  }
+
+  .floating-action-bar {
     display: none !important;
   }
 
-  .preview-content {
-    padding: 0;
-    background: white;
+  .preview-modal {
+    box-shadow: none !important;
+    width: 100% !important;
+    min-height: auto !important;
+    max-width: none !important;
+    transform: none !important;
+    margin: 0 !important;
   }
 
-  .preview-gridster {
-    background: white;
-    box-shadow: none;
+  .print-page {
+    padding: 10mm !important;
+    min-height: auto !important;
+
+    .report-header {
+      background: white !important;
+      box-shadow: none !important;
+      border: 1px solid #ccc !important;
+      page-break-inside: avoid;
+      margin-bottom: 20px !important;
+
+      .header-top .company-info .company-name {
+        color: #000 !important;
+      }
+
+      .header-center .report-title {
+        color: #000 !important;
+      }
+
+      .report-status {
+        background: #f0f0f0 !important;
+        border: 1px solid #ccc !important;
+
+        .status-indicator {
+          background: #666 !important;
+        }
+
+        .status-text {
+          color: #333 !important;
+        }
+      }
+    }
+
+    .dashboard-container .preview-gridster {
+      background: white !important;
+      box-shadow: none !important;
+      border: 1px solid #ccc !important;
+      page-break-inside: avoid;
+      margin: 20px 0 !important;
+
+      .preview-grid-item {
+        break-inside: avoid;
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+      }
+    }
+
+    .report-footer {
+      background: white !important;
+      box-shadow: none !important;
+      border-top: 1px solid #ccc !important;
+      page-break-inside: avoid;
+      margin-top: 30px !important;
+      padding: 15px 0 !important;
+
+      .footer-bottom {
+        .copyright,
+        .disclaimer {
+          color: #333 !important;
+        }
+      }
+    }
+  }
+}
+
+/* Export-specific styles (for html2canvas) */
+.exporting {
+  .floating-action-bar {
+    display: none !important;
   }
 
-  .preview-grid-item {
-    break-inside: avoid;
-    box-shadow: none;
-    border: 1px solid #ddd;
+  .preview-modal-overlay {
+    background: white !important;
+  }
+
+  .print-page {
+    .report-header {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .report-footer {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .dashboard-container {
+      .preview-gridster {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+        height: auto !important;
+        min-height: auto !important;
+        overflow: visible !important;
+        display: block !important;
+        
+        .preview-grid-item {
+          display: block !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+          position: relative !important;
+          
+          .chart-container {
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            
+            .chart-content {
+              display: block !important;
+              visibility: visible !important;
+              opacity: 1 !important;
+              
+              // Ensure Angular components are visible
+              * {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+              }
+              
+              // Specific chart component styling
+              app-table-chart,
+              app-pie-chart,
+              app-bar-chart,
+              app-line-chart,
+              app-scatter-chart,
+              app-scorecard-chart {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                width: 100% !important;
+                height: 100% !important;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

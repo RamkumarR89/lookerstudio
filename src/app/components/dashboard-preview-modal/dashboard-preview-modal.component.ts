@@ -41,33 +41,41 @@ export interface DashboardPreviewData {
   ],
   template: `
     <div class="preview-modal-overlay" [class.visible]="isVisible" (click)="onOverlayClick($event)">
-      <div class="preview-modal" #previewModal>
-        <!-- Modal Header -->
-        <div class="modal-header">
-          <div class="header-left">
-            <h2 class="modal-title">Dashboard Report</h2>
-            <div class="report-info">
-              <span class="chart-count">{{ dashboardData?.chartCount || 0 }} charts</span>
-              <span class="separator">•</span>
-              <span class="last-updated">Last updated: {{ getCurrentTimestamp() }}</span>
-            </div>
-          </div>
-          <div class="header-right">
-            <button class="maximize-btn" title="Maximize">
-              <span class="icon">⛶</span>
-            </button>
-            <button class="close-btn" (click)="closeModal.emit()" title="Close">
-              <span class="icon">✕</span>
-            </button>
-          </div>
-        </div>
+      <!-- Floating Action Bar -->
+      <div class="floating-action-bar">
+        <button class="action-btn pdf-btn" (click)="exportAsPDF()">
+          <span class="icon">📄</span>
+          Export PDF
+        </button>
+        <button class="action-btn png-btn" (click)="exportAsPNG()">
+          <span class="icon">🖼️</span>
+          Export PNG
+        </button>
+        <button class="action-btn close-btn" (click)="closeModal.emit()">
+          <span class="icon">✕</span>
+          Close
+        </button>
+      </div>
 
-        <!-- Preview Content -->
-        <div class="preview-content" #previewContent>
-          <!-- Report Title Section -->
+      <!-- Print-style Document -->
+      <div class="preview-modal" #previewModal>
+        <div class="print-page" #previewContent>
+          <!-- Enhanced Report Header -->
           <div class="report-header">
-            <h1 class="report-title">Dashboard Report</h1>
-            <p class="report-timestamp">Generated on {{ getCurrentTimestamp() }}</p>
+            <div class="header-top">
+              <div class="company-info">
+                <h1 class="company-name">Your Company Name</h1>
+                <p class="company-tagline">Business Intelligence Team</p>
+              </div>
+              <div class="report-metadata">
+                <p class="report-id">Report ID: RPT-{{ getCurrentDate().replace('/', '') }}-001</p>
+                <p class="generation-time">Generated: {{ getCurrentTime() }}</p>
+              </div>
+            </div>
+            <div class="header-center">
+              <h2 class="report-title">Dashboard Analytics Report</h2>
+              <p class="report-description">Comprehensive data analysis and visualization dashboard containing key business metrics and insights.</p>
+            </div>
           </div>
 
           <!-- Dashboard Grid -->
@@ -113,25 +121,13 @@ export interface DashboardPreviewData {
               </gridster-item>
             </gridster>
           </div>
-        </div>
 
-        <!-- Modal Footer -->
-        <div class="modal-footer">
-          <div class="footer-left">
-            <span class="export-message">Ready to export your dashboard</span>
-          </div>
-          <div class="footer-right">
-            <button class="export-btn pdf-btn" (click)="exportAsPDF()">
-              <span class="icon">📄</span>
-              Export as PDF
-            </button>
-            <button class="export-btn png-btn" (click)="exportAsPNG()">
-              <span class="icon">🖼️</span>
-              Export as PNG
-            </button>
-            <button class="close-preview-btn" (click)="closeModal.emit()">
-              Close Preview
-            </button>
+          <!-- Simple Report Footer -->
+          <div class="report-footer">
+            <div class="footer-bottom">
+              <p class="copyright">© 2025 Your Company Name. All rights reserved.</p>
+              <p class="disclaimer">This report contains confidential and proprietary information. Unauthorized distribution is prohibited.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -255,6 +251,27 @@ export class DashboardPreviewModalComponent implements OnInit {
     });
   }
 
+  getCurrentDate(): string {
+    return new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
+  getCurrentTime(): string {
+    return new Date().toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  }
+
+  getDataSourceCount(): number {
+    // For now return a default value, later this can be dynamic
+    return 3; // Sample: CSV, Database, API
+  }
+
   onOverlayClick(event: MouseEvent) {
     if (event.target === event.currentTarget) {
       this.closeModal.emit();
@@ -267,41 +284,191 @@ export class DashboardPreviewModalComponent implements OnInit {
 
   async exportAsPDF() {
     try {
+      // Ensure the element is fully rendered
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
       const element = this.previewContent.nativeElement;
+      const overlay = element.closest('.preview-modal-overlay') as HTMLElement;
+      
+      // Add export class for styling
+      if (overlay) overlay.classList.add('exporting');
+      
+      // Temporarily hide floating action bar for export
+      const actionBar = document.querySelector('.floating-action-bar') as HTMLElement;
+      if (actionBar) actionBar.style.display = 'none';
+      
+      // Ensure charts are fully loaded by checking for chart elements
+      const chartElements = element.querySelectorAll('.chart-content > *');
+      console.log(`Found ${chartElements.length} chart elements`);
+      
+      // Wait for charts to render
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Simple scroll to ensure content is loaded
+      element.scrollTop = 0;
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       const canvas = await html2canvas(element, {
-        scale: 2,
+        scale: 1,
         useCORS: true,
-        backgroundColor: '#ffffff'
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: true,
+        removeContainer: false,
+        foreignObjectRendering: true,
+        imageTimeout: 30000,
+        ignoreElements: (element) => {
+          // Don't ignore any elements that might contain charts
+          return false;
+        },
+        onclone: (clonedDoc, clonedElement) => {
+          // Ensure all Angular components are visible in the clone
+          const clonedPrintPage = clonedDoc.querySelector('.print-page') as HTMLElement;
+          if (clonedPrintPage) {
+            clonedPrintPage.style.height = 'auto';
+            clonedPrintPage.style.minHeight = 'auto';
+            
+            // Make sure gridster and charts are visible
+            const clonedGridster = clonedDoc.querySelector('.preview-gridster') as HTMLElement;
+            if (clonedGridster) {
+              clonedGridster.style.height = 'auto';
+              clonedGridster.style.minHeight = 'auto';
+              clonedGridster.style.overflow = 'visible';
+              clonedGridster.style.display = 'block';
+            }
+            
+            // Ensure all chart containers are visible
+            const clonedCharts = clonedDoc.querySelectorAll('.chart-content');
+            clonedCharts.forEach((chart: any) => {
+              chart.style.display = 'block';
+              chart.style.visibility = 'visible';
+              chart.style.opacity = '1';
+            });
+          }
+        }
       });
       
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('l', 'mm', 'a4');
+      // Restore action bar and remove export class
+      if (actionBar) actionBar.style.display = 'flex';
+      if (overlay) overlay.classList.remove('exporting');
       
-      const imgWidth = 297; // A4 landscape width
+      if (canvas.width === 0 || canvas.height === 0) {
+        throw new Error('Canvas is empty - unable to capture content');
+      }
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pdfWidth;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-      pdf.save('dashboard-report.pdf');
+      // Add content to PDF
+      if (imgHeight > pdfHeight) {
+        const pageCount = Math.ceil(imgHeight / pdfHeight);
+        
+        for (let i = 0; i < pageCount; i++) {
+          if (i > 0) pdf.addPage();
+          
+          const yOffset = -(pdfHeight * i);
+          pdf.addImage(imgData, 'PNG', 0, yOffset, imgWidth, imgHeight);
+        }
+      } else {
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      }
+      
+      pdf.save(`dashboard-report-${new Date().toISOString().split('T')[0]}.pdf`);
+      console.log('PDF export completed successfully');
     } catch (error) {
       console.error('Error exporting PDF:', error);
+      alert('Error exporting PDF. Please try again.');
     }
   }
 
   async exportAsPNG() {
     try {
+      // Ensure the element is fully rendered
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
       const element = this.previewContent.nativeElement;
+      const overlay = element.closest('.preview-modal-overlay') as HTMLElement;
+      
+      // Add export class for styling
+      if (overlay) overlay.classList.add('exporting');
+      
+      // Temporarily hide floating action bar for export
+      const actionBar = document.querySelector('.floating-action-bar') as HTMLElement;
+      if (actionBar) actionBar.style.display = 'none';
+      
+      // Ensure charts are fully loaded by checking for chart elements
+      const chartElements = element.querySelectorAll('.chart-content > *');
+      console.log(`Found ${chartElements.length} chart elements`);
+      
+      // Wait for charts to render
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Simple scroll to ensure content is loaded
+      element.scrollTop = 0;
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       const canvas = await html2canvas(element, {
-        scale: 2,
+        scale: 1,
         useCORS: true,
-        backgroundColor: '#ffffff'
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: true,
+        removeContainer: false,
+        foreignObjectRendering: true,
+        imageTimeout: 30000,
+        ignoreElements: (element) => {
+          // Don't ignore any elements that might contain charts
+          return false;
+        },
+        onclone: (clonedDoc, clonedElement) => {
+          // Ensure all Angular components are visible in the clone
+          const clonedPrintPage = clonedDoc.querySelector('.print-page') as HTMLElement;
+          if (clonedPrintPage) {
+            clonedPrintPage.style.height = 'auto';
+            clonedPrintPage.style.minHeight = 'auto';
+            
+            // Make sure gridster and charts are visible
+            const clonedGridster = clonedDoc.querySelector('.preview-gridster') as HTMLElement;
+            if (clonedGridster) {
+              clonedGridster.style.height = 'auto';
+              clonedGridster.style.minHeight = 'auto';
+              clonedGridster.style.overflow = 'visible';
+              clonedGridster.style.display = 'block';
+            }
+            
+            // Ensure all chart containers are visible
+            const clonedCharts = clonedDoc.querySelectorAll('.chart-content');
+            clonedCharts.forEach((chart: any) => {
+              chart.style.display = 'block';
+              chart.style.visibility = 'visible';
+              chart.style.opacity = '1';
+            });
+          }
+        }
       });
       
+      // Restore action bar and remove export class
+      if (actionBar) actionBar.style.display = 'flex';
+      if (overlay) overlay.classList.remove('exporting');
+      
+      if (canvas.width === 0 || canvas.height === 0) {
+        throw new Error('Canvas is empty - unable to capture content');
+      }
+      
       const link = document.createElement('a');
-      link.download = 'dashboard-report.png';
-      link.href = canvas.toDataURL();
+      link.download = `dashboard-report-${new Date().toISOString().split('T')[0]}.png`;
+      link.href = canvas.toDataURL('image/png');
       link.click();
+      
+      console.log('PNG export completed successfully');
     } catch (error) {
       console.error('Error exporting PNG:', error);
+      alert('Error exporting PNG. Please try again.');
     }
   }
 }

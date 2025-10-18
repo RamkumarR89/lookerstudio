@@ -401,21 +401,36 @@ export class Dashboard implements OnInit {
 
   openPreviewModal() {
     // Get current charts from grid dashboard
+    console.log('Opening preview modal...');
+    console.log('Grid dashboard:', this.gridDashboard);
+    console.log('Grid dashboard.dashboard:', this.gridDashboard?.dashboard);
+    
     if (this.gridDashboard && this.gridDashboard.dashboard) {
+      console.log('Dashboard items found:', this.gridDashboard.dashboard.length);
       this.previewData = {
         title: 'Dashboard Report',
         lastUpdated: new Date().toLocaleDateString(),
         chartCount: this.gridDashboard.dashboard.length,
         charts: this.gridDashboard.dashboard.map((item, index) => ({
           id: `chart-${index}`,
-          type: (item.type || 'scatter') as 'pie' | 'bar' | 'line' | 'scatter' | 'table' | 'scorecard',
-          title: this.getChartTitle(item.type || 'scatter'),
+          type: (item.type || 'table') as 'pie' | 'bar' | 'line' | 'scatter' | 'table' | 'scorecard',
+          title: this.getChartTitle(item.type || 'table'),
           x: item.x || 0,
           y: item.y || 0,
           cols: item.cols || 1,
           rows: item.rows || 1,
           data: null
         }))
+      };
+      console.log('Preview data prepared:', this.previewData);
+    } else {
+      console.log('No grid dashboard or dashboard items found');
+      // Fallback: create empty preview data
+      this.previewData = {
+        title: 'Dashboard Report',
+        lastUpdated: new Date().toLocaleDateString(),
+        chartCount: 0,
+        charts: []
       };
     }
     this.showPreviewModal = true;
