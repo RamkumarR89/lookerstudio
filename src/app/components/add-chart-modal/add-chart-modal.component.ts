@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 interface ChartType {
   id: string;
@@ -57,7 +58,7 @@ interface ChartCategory {
                 (click)="selectChart(chart)">
                 
                 <div class="chart-preview">
-                  <div class="chart-icon" [innerHTML]="chart.icon"></div>
+                  <div class="chart-icon" [innerHTML]="getSafeHtml(chart.icon)"></div>
                 </div>
                 
                 <div class="chart-name">{{ chart.name }}</div>
@@ -80,6 +81,12 @@ export class AddChartModalComponent {
   @Output() chartSelected = new EventEmitter<ChartType>();
 
   isMinimized = false;
+
+  constructor(private sanitizer: DomSanitizer) {}
+
+  getSafeHtml(html: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
 
   chartCategories: ChartCategory[] = [
     {

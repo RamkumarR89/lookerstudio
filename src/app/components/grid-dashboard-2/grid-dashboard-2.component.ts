@@ -193,7 +193,7 @@ export class GridDashboard2Component implements OnInit, OnDestroy {
 
   // Add a new chart to the grid
   addChartToGrid(chartType: 'table' | 'scatter' | 'pie' | 'line' | 'bar' | 'scorecard') {
-    // Find the next available position in the 3x3 grid
+    // Find the next available position in the grid
     const nextPosition = this.findNextAvailablePosition();
     
     if (nextPosition) {

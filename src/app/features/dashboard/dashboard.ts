@@ -320,10 +320,8 @@ export class Dashboard implements OnInit {
   }
 
   openAddChartModal() {
-    // Delegate to the grid component's modal
-    if (this.gridDashboard) {
-      this.gridDashboard.openAddChartModal();
-    }
+    // Use dashboard's own modal instead of grid's modal
+    this.showAddChartModal = true;
   }
 
   closeAddChartModal() {
@@ -359,8 +357,36 @@ export class Dashboard implements OnInit {
 
   onChartSelected(chart: any) {
     console.log('Selected chart type:', chart);
-    // Handle chart selection logic here
+    
+    // Add the chart to the grid dashboard
+    if (this.gridDashboard) {
+      // Map the chart type from modal to grid format
+      const chartType = this.mapChartType(chart.id || chart.name || chart);
+      this.gridDashboard.addChartToGrid(chartType);
+    }
+    
+    // Close the modal
     this.closeAddChartModal();
+  }
+
+  // Helper method to map chart types from modal to grid format
+  private mapChartType(chartId: string): 'table' | 'scatter' | 'pie' | 'line' | 'bar' | 'scorecard' {
+    const mapping: { [key: string]: 'table' | 'scatter' | 'pie' | 'line' | 'bar' | 'scorecard' } = {
+      'table': 'table',
+      'table-heatmap': 'table',
+      'table-bars': 'table',
+      'scorecard': 'scorecard',
+      'compact-scorecard': 'scorecard',
+      'bullet-chart': 'scorecard',
+      'pie': 'pie',
+      'bar': 'bar',
+      'line': 'line',
+      'scatter': 'scatter',
+      // Add more mappings as needed
+    };
+    
+    const lowercaseId = String(chartId).toLowerCase();
+    return mapping[lowercaseId] || 'table';
   }
 
   onComponentSelected(componentType: string) {

@@ -334,8 +334,8 @@
     
     .dimension-options {
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 3px;
+      grid-template-columns: repeat(3, 1fr); /* 3 columns instead of 6 for better organization */
+      gap: 4px;
       padding: 8px;
       max-height: 160px;
       overflow-y: auto;
