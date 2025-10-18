@@ -1,5 +1,5 @@
 <!-- Gridster Dashboard -->
-<gridster [options]="options">
+<gridster [options]="options" #gridsterComponent>
   <gridster-item [item]="item" *ngFor="let item of dashboard">
     <div class="widget-container">
       <div class="drag-handle" title="Drag to move chart">

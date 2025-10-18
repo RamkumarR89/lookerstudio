@@ -21,7 +21,7 @@ import { DashboardHistoryService, DashboardState } from '../../core/services/das
     <div class="looker-studio">
       
       <!-- Header Section -->
-      <app-header 
+      <app-header #headerComponent
         (addDataClicked)="openAddDataModal()"
         (addChartClicked)="openAddChartModal()"
         (themePanelClicked)="openThemePanel()"
@@ -31,7 +31,7 @@ import { DashboardHistoryService, DashboardState } from '../../core/services/das
         (resetClicked)="onReset($event)"
         (saveClicked)="onSave()"
         (zoomChanged)="onZoomChanged($event)"
-        (panReset)="onPanReset()">
+        (panReset)="onPanReset()">>>
       </app-header>
 
       <!-- Main Content Layout -->
@@ -243,6 +243,7 @@ import { DashboardHistoryService, DashboardState } from '../../core/services/das
 })
 export class Dashboard implements OnInit {
   @ViewChild('gridDashboard') gridDashboard!: GridDashboard2Component;
+  @ViewChild('headerComponent') headerComponent!: HeaderComponent;
   
   constructor(private historyService: DashboardHistoryService) {}
   

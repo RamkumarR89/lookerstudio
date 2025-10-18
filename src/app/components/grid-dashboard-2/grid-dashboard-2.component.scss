@@ -1,8 +1,10 @@
 /* Simple and clean styling for GridDashboard2 */
 .dashboard-grid {
-  height: calc(100vh - 100px);
+  height: calc(100vh - 60px);
   background: #202124;
   padding: 10px;
+  overflow-y: auto; /* Allow vertical scrolling to see bottom content */
+  overflow-x: hidden;
 }
 
 .chart-box {
@@ -57,19 +59,39 @@
   border-bottom: none;
 }
 
-/* Gridster specific overrides */
+/* Gridster Container */
 gridster {
   background: #202124 !important;
-  padding: 20px;
-  height: 100% !important;
-  overflow: visible;
+  padding: 20px 20px 100px 20px; /* Increased bottom padding to 100px */
+  height: auto !important; /* Changed from 100% to auto to allow natural height */
+  min-height: calc(100vh - 120px); /* Ensure minimum height but allow growth */
+  overflow: visible !important; /* Changed from auto to visible to show border */
   display: block !important;
+  box-sizing: border-box; /* Ensure padding is included in height calculation */
+  border: 2px solid #404040; /* Add visible border to see container edges */
+  border-radius: 8px;
+  margin-bottom: 20px; /* Add bottom margin to ensure visibility */
+  
+  /* Add a visible bottom indicator */
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 10px;
+    left: 20px;
+    right: 20px;
+    height: 3px;
+    background: linear-gradient(to right, #1a73e8, #34a853, #fbbc04, #ea4335);
+    border-radius: 2px;
+    opacity: 0.7;
+    pointer-events: none;
+  }
   
   gridster-item {
     border-radius: 8px;
     overflow: visible;
     cursor: move; // Show move cursor for dragging
     transition: all 0.2s ease;
+    margin-bottom: 2px; /* Add small margin to ensure borders are visible */
     
     &:hover {
       transform: translateY(-2px);
@@ -187,9 +209,11 @@ gridster {
 /* Host container */
 :host {
   display: block;
-  height: 100vh;
-  overflow: hidden;
+  height: auto; /* Changed from 100vh to auto to allow natural height */
+  min-height: 100vh; /* Ensure minimum full height */
+  overflow: visible; /* Changed from hidden to visible */
   background: #f8f9fa;
+  padding-bottom: 40px; /* Add bottom padding to host */
 }
 
 /* Grid guidelines when dragging/resizing */

@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Output, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DashboardHistoryService } from '../../core/services/dashboard-history.service';
+import { GridDimensionService } from '../../core/services/grid-dimension.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -74,6 +75,35 @@ import { Subscription } from 'rxjs';
           <button class="header-btn dropdown-btn" title="Add control element">
             🎛️
           </button>
+          
+          <!-- Grid Dimension Selector -->
+          <div class="dimension-selector">
+            <button class="header-btn dimension-btn" (click)="toggleDimensionSelector()" title="Change grid dimensions">
+              <span class="grid-icon">⊞</span>
+              <span class="dimension-label">{{ currentRows }}:{{ currentCols }}</span>
+              <span class="dropdown-arrow">▼</span>
+            </button>
+            
+            <!-- Dimension Dropdown -->
+            @if (showDimensionSelector) {
+              <div class="dimension-dropdown" (click)="$event.stopPropagation()">
+                <div class="dropdown-header">
+                  <h4>Grid Dimensions (Rows:Columns)</h4>
+                </div>
+                <div class="dimension-options">
+                  @for (option of dimensionOptions; track option.label) {
+                    <button 
+                      class="dimension-option"
+                      [class.active]="currentRows === option.rows && currentCols === option.cols"
+                      (click)="changeDimensions(option)"
+                      title="Set grid to {{ option.rows }} rows × {{ option.cols }} columns">
+                      {{ option.label }}
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+          </div>
         </div>
         
         <!-- Right: Action Buttons -->
@@ -128,6 +158,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   // Zoom-related outputs
   @Output() zoomChanged = new EventEmitter<number>();
   @Output() panReset = new EventEmitter<void>();
+  
+  // Grid dimension outputs
+  @Output() dimensionChanged = new EventEmitter<{ rows: number, cols: number }>();
 
   // UI state properties
   canUndo = false;
@@ -140,10 +173,37 @@ export class HeaderComponent implements OnInit, OnDestroy {
   minZoom = 25;
   maxZoom = 200;
   zoomStep = 25;
+  
+  // Grid dimension properties
+  currentRows = 3;
+  currentCols = 3;
+  showDimensionSelector = false;
+  
+  // Available dimension options (rows:columns)
+  dimensionOptions = [
+    { label: '1:1', rows: 1, cols: 1 },
+    { label: '1:2', rows: 1, cols: 2 },
+    { label: '1:3', rows: 1, cols: 3 },
+    { label: '2:1', rows: 2, cols: 1 },
+    { label: '2:2', rows: 2, cols: 2 },
+    { label: '2:3', rows: 2, cols: 3 },
+    { label: '3:1', rows: 3, cols: 1 },
+    { label: '3:2', rows: 3, cols: 2 },
+    { label: '3:3', rows: 3, cols: 3 },
+    { label: '4:1', rows: 4, cols: 1 },
+    { label: '4:2', rows: 4, cols: 2 },
+    { label: '4:3', rows: 4, cols: 3 },
+    { label: '5:1', rows: 5, cols: 1 },
+    { label: '5:2', rows: 5, cols: 2 },
+    { label: '5:3', rows: 5, cols: 3 },
+    { label: '6:1', rows: 6, cols: 1 },
+    { label: '6:2', rows: 6, cols: 2 },
+    { label: '6:3', rows: 6, cols: 3 }
+  ];
 
   private subscriptions = new Subscription();
 
-  constructor(private historyService: DashboardHistoryService) {}
+  constructor(private historyService: DashboardHistoryService, private gridDimensionService: GridDimensionService) {}
 
   ngOnInit(): void {
     // Subscribe to history service observables
@@ -168,6 +228,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.historyService.hasChanges$.subscribe(hasChanges => {
         this.hasChanges = hasChanges;
+      })
+    );
+    
+    // Subscribe to dimension changes to keep header display in sync
+    this.subscriptions.add(
+      this.gridDimensionService.dimension$.subscribe(dimension => {
+        console.log('Header: Received dimension update:', dimension);
+        this.currentRows = dimension.rows;
+        this.currentCols = dimension.cols;
       })
     );
   }
@@ -239,5 +308,40 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onPanReset() {
     this.panReset.emit();
+  }
+  
+  // Grid dimension methods
+  toggleDimensionSelector() {
+    console.log('Header: toggleDimensionSelector called, current state:', this.showDimensionSelector);
+    this.showDimensionSelector = !this.showDimensionSelector;
+    console.log('Header: showDimensionSelector is now:', this.showDimensionSelector);
+  }
+  
+  changeDimensions(option: { label: string, rows: number, cols: number }) {
+    console.log('Header: Changing dimensions to', option);
+    this.currentRows = option.rows;
+    this.currentCols = option.cols;
+    this.showDimensionSelector = false;
+    
+    // Use the service to communicate dimension change
+    this.gridDimensionService.changeDimension({
+      rows: option.rows,
+      cols: option.cols,
+      label: option.label
+    });
+    
+    // Don't emit for backward compatibility since service handles it
+    // this.dimensionChanged.emit({ rows: option.rows, cols: option.cols });
+    
+    console.log(`Header: Grid dimensions changed to ${option.label} (${option.rows}x${option.cols})`);
+  }
+  
+  // Close dropdowns when clicking outside
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.dimension-selector')) {
+      this.showDimensionSelector = false;
+    }
   }
 }
